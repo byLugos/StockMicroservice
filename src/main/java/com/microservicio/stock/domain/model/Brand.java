@@ -8,12 +8,12 @@ import lombok.Getter;
 @Getter
 public class Brand {
     private final Long id;
-    private final String nombre;
-    private final String descripcion;
+    private final String name;
+    private final String description;
 
-    public Brand(Long id, String nombre, String descripcion) {
+    public Brand(Long id, String name, String description) {
         this.id = id;
-        this.nombre = nombre;
-        this.descripcion = descripcion;
+        this.name = name;
+        this.description = description;
     }
 }
