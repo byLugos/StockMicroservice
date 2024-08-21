@@ -16,7 +16,7 @@ public class BrandService implements BrandIn {
     public Brand createBrand(String name, String description) {
         BrandValidator.validateName(name);
         BrandValidator.validateDescription(description);
-        if (brandOut.existsByNombre(name)){
+        if (brandOut.existsByName(name)){
             String brandExist = "El nombre de la marca ya existe";
             throw new InvalidNameExceptionMe(brandExist);
         }
