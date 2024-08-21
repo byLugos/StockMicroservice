@@ -6,6 +6,9 @@ import com.microservicio.stock.infraestructure.jpaout.entity.CategoryEntity;
 import com.microservicio.stock.infraestructure.jpaout.mapper.JpaCategoryMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @AllArgsConstructor
 @Component
 public class CategoryJpaOut implements CategoryOut {
@@ -24,6 +27,13 @@ public class CategoryJpaOut implements CategoryOut {
         CategoryEntity entity = jpaCategoryMapper.toEntity(category);
         CategoryEntity savedEntity = categoryRepository.save(entity);
         return jpaCategoryMapper.toDomain(savedEntity);
+    }
+    @Override
+    public List<Category> findAll() {
+        List<CategoryEntity> entities = categoryRepository.findAll();
+        return entities.stream()
+                .map(jpaCategoryMapper::toDomain)
+                .collect(Collectors.toList());
     }
 }
 
