@@ -7,7 +7,6 @@ import com.microservicio.stock.infraestructure.jpaout.mapper.JpaCategoryMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Component
@@ -33,7 +32,7 @@ public class CategoryJpaOut implements CategoryOut {
         List<CategoryEntity> entities = categoryRepository.findAll();
         return entities.stream()
                 .map(jpaCategoryMapper::toDomain)
-                .collect(Collectors.toList());
+                .toList();  // Reemplaza Collectors.toList() por stream().toList()
     }
 }
 

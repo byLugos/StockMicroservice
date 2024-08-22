@@ -1,10 +1,10 @@
 package com.microservicio.stock.infraestructure.controllers;
 
 import com.microservicio.stock.application.dto.CategoryDTO;
-import com.microservicio.stock.application.handler.CategotyHandler;
-import com.microservicio.stock.domain.util.pageable.PageCustom;
-import com.microservicio.stock.domain.util.pageable.PageRequestCustom;
+import com.microservicio.stock.application.handler.CategoryHandler;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 public class CategoryController {
 
-    private final CategotyHandler categoryHandler;
+    private final CategoryHandler categoryHandler;
 
     @PostMapping
     public ResponseEntity<CategoryDTO> createCategory(@RequestBody CategoryDTO categoryDTO) {
@@ -22,13 +22,9 @@ public class CategoryController {
         return new ResponseEntity<>(newCategory, HttpStatus.CREATED);
     }
     @GetMapping
-    public ResponseEntity<PageCustom<CategoryDTO>> listCategories(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "true") boolean ascending
-    ) {
-        PageRequestCustom pageRequestCustom = new PageRequestCustom(page, size, ascending);
-        PageCustom<CategoryDTO> categories = categoryHandler.listCategories(pageRequestCustom);
+    public ResponseEntity<Page<CategoryDTO>> listCategories(Pageable pageable) {
+        // Llamar al handler para obtener la lista paginada y ordenada de categorías en forma de DTO
+        Page<CategoryDTO> categories = categoryHandler.listCategories(pageable);
         return ResponseEntity.ok(categories);
     }
 }

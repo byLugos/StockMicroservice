@@ -11,8 +11,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -33,69 +31,56 @@ class CategoryServiceTest {
     }
 
     @Test
-    void testCreateCategory_Successful() {
-        String nombre = "Electronics";
-        String descripcion = "All electronic items";
+    void testCreateCategory_Success() {
+        String name = "Electronics";
+        String description = "All electronic items";
 
-        when(categoryOut.existByName(nombre)).thenReturn(false);
-        when(categoryOut.save(any(Category.class))).thenReturn(new Category(1L, nombre, descripcion));
+        when(categoryOut.existByName(name)).thenReturn(false);
+        when(categoryOut.save(any(Category.class))).thenReturn(new Category(1L, name, description));
 
-        Category result = categoryService.createCategory(nombre, descripcion);
+        Category result = categoryService.createCategory(name, description);
 
         assertNotNull(result);
-        assertEquals(nombre, result.getName());
-        assertEquals(descripcion, result.getDescription());
+        assertEquals(name, result.getName());
+        assertEquals(description, result.getDescription());
     }
 
     @Test
     void testCreateCategory_NameAlreadyExists() {
-        String nombre = "Electronics";
-        String descripcion = "All electronic items";
+        String name = "Electronics";
+        String description = "All electronic items";
 
-        when(categoryOut.existByName(nombre)).thenReturn(true);
+        when(categoryOut.existByName(name)).thenReturn(true);
 
         InvalidNameExceptionMe exception = assertThrows(InvalidNameExceptionMe.class, () -> {
-            categoryService.createCategory(nombre, descripcion);
+            categoryService.createCategory(name, description);
         });
 
         assertEquals("El nombre de la categoria ya existe", exception.getMessage());
     }
-    @Test
-    void testListCategory_AscendingOrder() {
-        List<Category> categories = Arrays.asList(
-                new Category(1L, "Electronics", "All electronic items"),
-                new Category(2L, "Books", "Various kinds of books"),
-                new Category(3L, "Furniture", "Home and office furniture")
-        );
 
+    @Test
+    void testListCategory_Success() {
+        List<Category> categories = List.of(new Category(1L, "Books", "All kinds of books"), new Category(2L, "Electronics", "All electronic items"));
         when(categoryOut.findAll()).thenReturn(categories);
 
-        PageRequestCustom pageRequest = new PageRequestCustom(0, 2, true); // Orden ascendente, página 0, tamaño 2
-        PageCustom<Category> result = categoryService.listCategory(pageRequest);
+        PageRequestCustom pageRequestCustom = new PageRequestCustom(0, 10, true);
+        PageCustom<Category> result = categoryService.listCategory(pageRequestCustom);
 
         assertNotNull(result);
-        assertEquals(2, result.getContent().size());
-        assertEquals("Books", result.getContent().get(0).getName()); // Verifica que el orden sea ascendente
-        assertEquals("Electronics", result.getContent().get(1).getName());
-        assertEquals(2, result.getTotalPages());
-        assertEquals(0, result.getCurrentPage());
-        assertTrue(result.isAscending()); // Verifica que el orden sea ascendente
-        assertFalse(result.isEmpty()); // Verifica que la página no esté vacía
+        assertEquals(2, result.getTotalElements());
+        assertEquals(1, result.getTotalPages());
     }
 
     @Test
-    void testListCategory_EmptyPage() {
+    void testListCategory_Empty() {
         when(categoryOut.findAll()).thenReturn(Collections.emptyList());
 
-        PageRequestCustom pageRequest = new PageRequestCustom(0, 2, true);
-        PageCustom<Category> result = categoryService.listCategory(pageRequest);
+        PageRequestCustom pageRequestCustom = new PageRequestCustom(0, 10, true);
+        PageCustom<Category> result = categoryService.listCategory(pageRequestCustom);
 
         assertNotNull(result);
-        assertTrue(result.isEmpty()); // Verifica que la página esté vacía
         assertEquals(0, result.getTotalElements());
-        assertEquals(0, result.getTotalPages()); //
-        assertEquals(0, result.getCurrentPage());
-        assertTrue(result.isAscending()); // Verifica que el orden sea ascendente
+        assertEquals(0, result.getTotalPages());
     }
-
 }

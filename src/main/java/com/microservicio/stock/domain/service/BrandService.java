@@ -5,6 +5,11 @@ import com.microservicio.stock.domain.model.Brand;
 import com.microservicio.stock.domain.ports.api.BrandIn;
 import com.microservicio.stock.domain.ports.spi.BrandOut;
 import com.microservicio.stock.domain.util.BrandValidator;
+import com.microservicio.stock.domain.util.pageable.PageCustom;
+import com.microservicio.stock.domain.util.pageable.PageRequestCustom;
+import com.microservicio.stock.domain.util.pageable.PagingUtil;
+
+import java.util.List;
 
 public class BrandService implements BrandIn {
     private final BrandOut brandOut;
@@ -22,5 +27,11 @@ public class BrandService implements BrandIn {
         }
         Brand newBrand = new Brand(null, name,description);
         return brandOut.save(newBrand);
+    }
+
+    @Override
+    public PageCustom<Brand> listBrand(PageRequestCustom pageRequestCustom) {
+        List<Brand> allBrands = brandOut.findAll();
+        return PagingUtil.paginateAndSort(allBrands, pageRequestCustom, Brand::getName);
     }
 }

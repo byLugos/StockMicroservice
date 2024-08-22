@@ -1,10 +1,10 @@
 package com.microservicio.stock.application.handler;
 
-import com.microservicio.stock.application.dto.BrandDTO;
-import com.microservicio.stock.application.mapper.BrandMapper;
+import com.microservicio.stock.application.dto.CategoryDTO;
+import com.microservicio.stock.application.mapper.CategoryMapper;
 import com.microservicio.stock.application.mapper.PageMapper;
-import com.microservicio.stock.domain.model.Brand;
-import com.microservicio.stock.domain.ports.api.BrandIn;
+import com.microservicio.stock.domain.model.Category;
+import com.microservicio.stock.domain.ports.api.CategoryIn;
 import com.microservicio.stock.domain.util.pageable.PageCustom;
 import com.microservicio.stock.domain.util.pageable.PageRequestCustom;
 import lombok.AllArgsConstructor;
@@ -15,29 +15,28 @@ import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-public class BrandHandler {
+public class CategoryHandler {
 
-    private final BrandIn brandIn;
-    private final BrandMapper brandMapper;
+    private final CategoryIn categoryIn;
+    private final CategoryMapper categoryMapper;
 
-    public BrandDTO createBrand(BrandDTO brandDTO) {
+    public CategoryDTO createCategory(CategoryDTO categoryDTO) {
 
-        Brand brand = brandMapper.toEntity(brandDTO);
+        Category category = categoryMapper.toEntity(categoryDTO);
 
-        Brand newBrand = brandIn.createBrand(brand.getName(),brand.getDescription());
+        Category newCategory = categoryIn.createCategory(category.getName(),category.getDescription());
 
-        return brandMapper.toDTO(newBrand);
+        return categoryMapper.toDTO(newCategory);
     }
-
-    public Page<BrandDTO> listBrands(Pageable pageable) {
+    public Page<CategoryDTO> listCategories(Pageable pageable) {
         //parsear Pageable Spring a PageRequestCustom
         PageRequestCustom pageRequestCustom = new PageRequestCustom(pageable.getPageNumber(),pageable.getPageSize(),pageable.getSort().isSorted());
         //usar la interfaz de dominio
-        PageCustom<Brand> pageCustom = brandIn.listBrand(pageRequestCustom);
+        PageCustom<Category> pageCustom = categoryIn.listCategory(pageRequestCustom);
         //convertir PageCustom a Page de Spring y mapearDTOS
         return PageMapper.toSpringPage(
                 new PageCustom<>(
-                        pageCustom.getContent().stream().map(brandMapper::toDTO).toList(),
+                        pageCustom.getContent().stream().map(categoryMapper::toDTO).toList(),
                         pageCustom.getTotalElements(),
                         pageCustom.getTotalPages(),
                         pageCustom.getCurrentPage(),
