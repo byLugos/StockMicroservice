@@ -1,8 +1,8 @@
 package com.microservicio.stock.application.mapper;
-
 import com.microservicio.stock.domain.util.pageable.PageCustom;
 import com.microservicio.stock.domain.util.pageable.PageRequestCustom;
 import org.springframework.data.domain.*;
+
 
 public class PageMapper {
     private PageMapper() {

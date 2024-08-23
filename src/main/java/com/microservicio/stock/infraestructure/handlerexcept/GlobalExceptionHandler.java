@@ -3,6 +3,7 @@ package com.microservicio.stock.infraestructure.handlerexcept;
 import com.microservicio.stock.domain.exception.InvalidDescriptionException;
 import com.microservicio.stock.domain.exception.InvalidNameExceptionMe;
 import com.microservicio.stock.infraestructure.exception.ErrorResponse;
+import com.microservicio.stock.infraestructure.exception.NotFoundCategory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -12,14 +13,20 @@ import org.springframework.web.context.request.WebRequest;
 @ControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(InvalidNameExceptionMe.class)
-    public ResponseEntity<ErrorResponse> handleCategoriaNombreInvalidoException(InvalidNameExceptionMe ex, WebRequest request) {
+    public ResponseEntity<ErrorResponse> handleInvalidNameException(InvalidNameExceptionMe ex, WebRequest request) {
         ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), "NOMBRE_INVALIDO");
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(InvalidDescriptionException.class)
-    public ResponseEntity<ErrorResponse> handleCategoriaDescripcionInvalidaException(InvalidDescriptionException ex, WebRequest request) {
+    public ResponseEntity<ErrorResponse> handleInvalidDescriptionException(InvalidDescriptionException ex, WebRequest request) {
         ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), "DESCRIPCION_INVALIDA");
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NotFoundCategory.class)
+    public ResponseEntity<ErrorResponse> handlerNotFoundCategoryException(NotFoundCategory ex, WebRequest request) {
+        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), "LA CATEGORIA NO SE PUDO ENCONTRAR");
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 

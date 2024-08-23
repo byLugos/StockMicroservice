@@ -21,6 +21,10 @@ public class CategoryController {
         CategoryDTO newCategory = categoryHandler.createCategory(categoryDTO);
         return new ResponseEntity<>(newCategory, HttpStatus.CREATED);
     }
+
+
+
+
     @GetMapping
     public ResponseEntity<Page<CategoryDTO>> listCategories(Pageable pageable) {
         // Llamar al handler para obtener la lista paginada y ordenada de categorías en forma de DTO

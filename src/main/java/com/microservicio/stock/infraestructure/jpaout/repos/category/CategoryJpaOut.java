@@ -23,16 +23,20 @@ public class CategoryJpaOut implements CategoryOut {
 
     @Override
     public Category save(Category category) {
+
         CategoryEntity entity = jpaCategoryMapper.toEntity(category);
+
         CategoryEntity savedEntity = categoryRepository.save(entity);
+
         return jpaCategoryMapper.toDomain(savedEntity);
     }
+
     @Override
     public List<Category> findAll() {
         List<CategoryEntity> entities = categoryRepository.findAll();
         return entities.stream()
                 .map(jpaCategoryMapper::toDomain)
-                .toList();  // Reemplaza Collectors.toList() por stream().toList()
+                .toList();
     }
 }
 

@@ -7,6 +7,7 @@ public class PagingUtil {
     private PagingUtil() {
         throw new UnsupportedOperationException("Esta es una clase de utilidad, no se puede instanciar");
     }
+
     public static <T> PageCustom<T> paginateAndSort(List<T> items, PageRequestCustom pageRequestCustom, Function<T, String> sortKeyExtractor) {
         // Ordenar los elementos
         List<T> sortedItems = items.stream()
@@ -14,7 +15,7 @@ public class PagingUtil {
                     int comparison = sortKeyExtractor.apply(item1).compareToIgnoreCase(sortKeyExtractor.apply(item2));
                     return pageRequestCustom.isAscending() ? comparison : -comparison;
                 })
-                .toList();  // Reemplaza Collectors.toList() por stream().toList()
+                .toList();
 
         // Calcular inicio y final para la sublista de la página actual
         int start = pageRequestCustom.getPage() * pageRequestCustom.getSize();

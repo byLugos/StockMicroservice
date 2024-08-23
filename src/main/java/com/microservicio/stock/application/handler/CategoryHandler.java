@@ -21,13 +21,13 @@ public class CategoryHandler {
     private final CategoryMapper categoryMapper;
 
     public CategoryDTO createCategory(CategoryDTO categoryDTO) {
-
         Category category = categoryMapper.toEntity(categoryDTO);
 
         Category newCategory = categoryIn.createCategory(category.getName(),category.getDescription());
 
         return categoryMapper.toDTO(newCategory);
     }
+
     public Page<CategoryDTO> listCategories(Pageable pageable) {
         //parsear Pageable Spring a PageRequestCustom
         PageRequestCustom pageRequestCustom = new PageRequestCustom(pageable.getPageNumber(),pageable.getPageSize(),pageable.getSort().isSorted());

@@ -7,13 +7,16 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-
-public class CategoryEntity {
+public class ArticleCategoryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    @ManyToOne
+    @JoinColumn(name = "id_article")
+    private ArticleEntity article;
 
-    private String description;
+    @ManyToOne
+    @JoinColumn(name = "id_category")
+    private CategoryEntity category;
 }

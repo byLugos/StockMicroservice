@@ -5,12 +5,20 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
-@NoArgsConstructor
-public class CategoryDTO {
+public class ArticleDTO {
     private Long id;
     private String name;
     private String description;
+    private int quantity;
+    private BigDecimal price;
+    private List<Long> categoryIds;
+
+
 }

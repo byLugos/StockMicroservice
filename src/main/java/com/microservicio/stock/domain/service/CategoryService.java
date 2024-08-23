@@ -8,7 +8,9 @@ import com.microservicio.stock.domain.util.CategoryValidator;
 import com.microservicio.stock.domain.util.pageable.PageCustom;
 import com.microservicio.stock.domain.util.pageable.PageRequestCustom;
 import com.microservicio.stock.domain.util.pageable.PagingUtil;
+
 import java.util.List;
+
 public class CategoryService implements CategoryIn {
     private final CategoryOut categoryOut;
     public CategoryService(CategoryOut categoryOut) {
