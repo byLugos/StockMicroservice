@@ -43,7 +43,7 @@ class ArticleHandlerTest {
         articleDTO.setDescription("Test Description");
         articleDTO.setQuantity(100);
         articleDTO.setPrice(new BigDecimal("99.99"));
-        articleDTO.setCategoryIds(categoryIds);
+        articleDTO.setCategories(categoryIds);
 
         Article article = new Article(null, "Test Article", "Test Description", 100, new BigDecimal("99.99"), null);
         Article savedArticle = new Article(1L, "Test Article", "Test Description", 100, new BigDecimal("99.99"), null);
@@ -54,7 +54,7 @@ class ArticleHandlerTest {
         expectedDTO.setDescription("Test Description");
         expectedDTO.setQuantity(100);
         expectedDTO.setPrice(new BigDecimal("99.99"));
-        expectedDTO.setCategoryIds(categoryIds);
+        expectedDTO.setCategories(categoryIds);
 
         // Configurar mockeo
         when(articleMapper.toEntity(articleDTO)).thenReturn(article);
@@ -63,7 +63,7 @@ class ArticleHandlerTest {
                 article.getDescription(),
                 article.getQuantity(),
                 article.getPrice(),
-                articleDTO.getCategoryIds()
+                articleDTO.getCategories()
         )).thenReturn(savedArticle);
         when(articleMapper.toDTO(savedArticle)).thenReturn(expectedDTO);
 
@@ -78,7 +78,7 @@ class ArticleHandlerTest {
                 article.getDescription(),
                 article.getQuantity(),
                 article.getPrice(),
-                articleDTO.getCategoryIds()
+                articleDTO.getCategories()
         );
         verify(articleMapper).toDTO(savedArticle);
     }

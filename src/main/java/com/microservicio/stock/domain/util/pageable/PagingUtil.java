@@ -3,11 +3,9 @@ package com.microservicio.stock.domain.util.pageable;
 import java.util.List;
 import java.util.function.Function;
 public class PagingUtil {
-
     private PagingUtil() {
         throw new UnsupportedOperationException("Esta es una clase de utilidad, no se puede instanciar");
     }
-
     public static <T> PageCustom<T> paginateAndSort(List<T> items, PageRequestCustom pageRequestCustom, Function<T, String> sortKeyExtractor) {
         // Ordenar los elementos
         List<T> sortedItems = items.stream()

@@ -1,5 +1,4 @@
 package com.microservicio.stock.domain.service;
-
 import com.microservicio.stock.domain.exception.InvalidNameExceptionMe;
 import com.microservicio.stock.domain.model.Article;
 import com.microservicio.stock.domain.model.ArticleCategory;
@@ -7,17 +6,17 @@ import com.microservicio.stock.domain.model.Category;
 import com.microservicio.stock.domain.ports.api.ArticleIn;
 import com.microservicio.stock.domain.ports.spi.ArticleOut;
 import com.microservicio.stock.domain.util.ArticleValidator;
+import com.microservicio.stock.domain.util.pageable.PageCustom;
+import com.microservicio.stock.domain.util.pageable.PageRequestCustom;
+import com.microservicio.stock.domain.util.pageable.PagingUtil;
 
 import java.math.BigDecimal;
 import java.util.List;
 public class ArticleService implements ArticleIn {
-
     private final ArticleOut articleOut;
-
     public ArticleService(ArticleOut articleOut) {
         this.articleOut = articleOut;
     }
-
     @Override
     public Article createArticle(String name, String description, int quantity, BigDecimal price, List<Long> categoryIds) {
         ArticleValidator.validateName(name);
@@ -44,5 +43,10 @@ public class ArticleService implements ArticleIn {
         }
 
         return savedArticle;
+    }
+    @Override
+    public PageCustom<Article> listArticle(PageRequestCustom pageRequestCustom) {
+        List<Article> allArticles = articleOut.findAll();
+        return PagingUtil.paginateAndSort(allArticles, pageRequestCustom, Article::getName);
     }
 }

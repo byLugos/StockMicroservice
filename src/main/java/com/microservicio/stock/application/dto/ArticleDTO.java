@@ -1,5 +1,6 @@
 package com.microservicio.stock.application.dto;
 
+import com.microservicio.stock.domain.model.ArticleCategory;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,7 +19,5 @@ public class ArticleDTO {
     private String description;
     private int quantity;
     private BigDecimal price;
-    private List<Long> categoryIds;
-
-
+    private List<Long> categories;
 }

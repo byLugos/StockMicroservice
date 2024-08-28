@@ -39,7 +39,7 @@ class ArticleControllerTest {
         articleDTO.setDescription("Test Description");
         articleDTO.setQuantity(100);
         articleDTO.setPrice(new BigDecimal("99.99"));
-        articleDTO.setCategoryIds(Arrays.asList(1L, 2L, 3L));
+        articleDTO.setCategories(Arrays.asList(1L, 2L, 3L));
 
         ArticleDTO savedArticleDTO = new ArticleDTO();
         savedArticleDTO.setId(1L);
@@ -47,7 +47,7 @@ class ArticleControllerTest {
         savedArticleDTO.setDescription("Test Description");
         savedArticleDTO.setQuantity(100);
         savedArticleDTO.setPrice(new BigDecimal("99.99"));
-        savedArticleDTO.setCategoryIds(Arrays.asList(1L, 2L, 3L));
+        savedArticleDTO.setCategories(Arrays.asList(1L, 2L, 3L));
 
         // Configurar mockeo
         when(articleHandler.createArticle(any(ArticleDTO.class))).thenReturn(savedArticleDTO);

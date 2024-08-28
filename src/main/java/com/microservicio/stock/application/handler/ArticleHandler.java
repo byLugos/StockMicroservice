@@ -6,14 +6,14 @@ import com.microservicio.stock.domain.model.Article;
 import com.microservicio.stock.domain.ports.api.ArticleIn;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 @AllArgsConstructor
 public class ArticleHandler {
-
     private final ArticleIn articleIn;
     private final ArticleMapper articleMapper;
-
     public ArticleDTO createArticle(ArticleDTO articleDTO) {
         // Convertir DTO a entidad de dominio
         Article article = articleMapper.toEntity(articleDTO);
@@ -24,10 +24,11 @@ public class ArticleHandler {
                 article.getDescription(),
                 article.getQuantity(),
                 article.getPrice(),
-                articleDTO.getCategoryIds()
+                articleDTO.getCategories()
         );
-
-        // Convertir la entidad de dominio a DTO y retornarla
-        return articleMapper.toDTO(newArticle);
+        // Vuelve a mapear el artículo y asegúrate de incluir las categorías
+        ArticleDTO result = articleMapper.toDTO(newArticle);
+        result.setCategories(articleDTO.getCategories());  // Incluye manualmente los IDs de categoría
+        return result;
     }
 }

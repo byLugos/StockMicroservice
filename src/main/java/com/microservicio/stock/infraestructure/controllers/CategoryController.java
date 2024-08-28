@@ -13,18 +13,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/categories")
 @AllArgsConstructor
 public class CategoryController {
-
     private final CategoryHandler categoryHandler;
-
     @PostMapping
     public ResponseEntity<CategoryDTO> createCategory(@RequestBody CategoryDTO categoryDTO) {
         CategoryDTO newCategory = categoryHandler.createCategory(categoryDTO);
         return new ResponseEntity<>(newCategory, HttpStatus.CREATED);
     }
-
-
-
-
     @GetMapping
     public ResponseEntity<Page<CategoryDTO>> listCategories(Pageable pageable) {
         // Llamar al handler para obtener la lista paginada y ordenada de categorías en forma de DTO

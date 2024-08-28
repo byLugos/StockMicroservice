@@ -8,9 +8,8 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring", uses = {JpaArticleCategoryMapper.class})
 public interface JpaArticleMapper {
-
-    ArticleEntity toEntity(Article article);
-
     @Mapping(target = "categories", source = "categories")
     Article toDomain(ArticleEntity articleEntity);
+    @Mapping(target = "categories", source = "categories")
+    ArticleEntity toEntity(Article article);
 }

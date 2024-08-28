@@ -47,11 +47,8 @@ public class ArticleJpaOut implements ArticleOut {
 
     @Override
     public List<Article> findAll() {
-        return articleRepository.findAll().stream()
-                .map(jpaArticleMapper::toDomain)
-                .toList();
+        return null;
     }
-
     @Override
     public Category findCategoryById(Long id) {
         return categoryRepository.findById(id)

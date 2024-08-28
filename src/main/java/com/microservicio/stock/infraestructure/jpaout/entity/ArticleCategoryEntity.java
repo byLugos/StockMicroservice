@@ -11,11 +11,9 @@ public class ArticleCategoryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @ManyToOne
     @JoinColumn(name = "id_article")
     private ArticleEntity article;
-
     @ManyToOne
     @JoinColumn(name = "id_category")
     private CategoryEntity category;

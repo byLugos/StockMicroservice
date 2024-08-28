@@ -8,5 +8,4 @@ public interface CategoryOut {
     boolean existByName(String name);
     Category save(Category category);
     List<Category> findAll();
-
 }

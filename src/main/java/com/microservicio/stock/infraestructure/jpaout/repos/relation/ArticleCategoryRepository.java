@@ -4,5 +4,4 @@ import com.microservicio.stock.infraestructure.jpaout.entity.ArticleCategoryEnti
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ArticleCategoryRepository extends JpaRepository<ArticleCategoryEntity,Long> {
-
 }
