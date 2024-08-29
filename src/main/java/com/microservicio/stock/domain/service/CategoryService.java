@@ -10,7 +10,6 @@ import com.microservicio.stock.domain.util.pageable.PageRequestCustom;
 import com.microservicio.stock.domain.util.pageable.PagingUtil;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class CategoryService implements CategoryIn {
     private final CategoryOut categoryOut;
@@ -32,21 +31,16 @@ public class CategoryService implements CategoryIn {
     @Override
     public PageCustom<Category> listCategory(PageRequestCustom pageRequestCustom, String name, String sort) {
         List<Category> allCategories = categoryOut.findAll();
-
-        // Filtrar por nombre si se proporciona
         if (name != null && !name.isEmpty()) {
             allCategories = allCategories.stream()
                     .filter(category -> category.getName().contains(name))
-                    .collect(Collectors.toList());
+                    .toList();
         }
-
-        // Ordenar los elementos con la función de utilidad existente
         return PagingUtil.paginateAndSort(allCategories, pageRequestCustom, category -> {
             if ("name".equalsIgnoreCase(sort)) {
                 return category.getName();
             }
-            // Añadir otros campos de ordenamiento si se necesitan
-            return category.getName(); // Default: Ordenar por nombre
+            return category.getName();
         });
     }
 }
