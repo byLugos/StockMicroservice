@@ -9,6 +9,6 @@ import java.util.List;
 
 public interface ArticleIn {
     Article createArticle(String name, String description, int quantity, BigDecimal price, List<Long> categoryIds);
-    PageCustom<Article> listArticle(PageRequestCustom pageRequestCustom);
+    PageCustom<Article> listArticle(PageRequestCustom pageRequestCustom, String name, String sort, List<String> categoryNames);
 
 }

@@ -2,6 +2,7 @@ package com.microservicio.stock.domain.service;
 import com.microservicio.stock.domain.exception.InvalidNameExceptionMe;
 import com.microservicio.stock.domain.model.Article;
 import com.microservicio.stock.domain.model.ArticleCategory;
+import com.microservicio.stock.domain.model.Brand;
 import com.microservicio.stock.domain.model.Category;
 import com.microservicio.stock.domain.ports.api.ArticleIn;
 import com.microservicio.stock.domain.ports.spi.ArticleOut;
@@ -45,8 +46,31 @@ public class ArticleService implements ArticleIn {
         return savedArticle;
     }
     @Override
-    public PageCustom<Article> listArticle(PageRequestCustom pageRequestCustom) {
+    public PageCustom<Article> listArticle(PageRequestCustom pageRequestCustom, String name, String sort, List<String> categoryNames) {
         List<Article> allArticles = articleOut.findAll();
-        return PagingUtil.paginateAndSort(allArticles, pageRequestCustom, Article::getName);
+
+        // Filtrar por nombre de artículo si se proporciona
+        if (name != null && !name.isEmpty()) {
+            allArticles = allArticles.stream()
+                    .filter(article -> article.getName().contains(name))
+                    .toList();
+        }
+
+        // Filtrar por nombres de categoría si se proporcionan
+        if (categoryNames != null && !categoryNames.isEmpty()) {
+            allArticles = allArticles.stream()
+                    .filter(article -> article.getCategories().stream()
+                            .anyMatch(cat -> categoryNames.contains(cat.getCategory().getName())))
+                    .toList();
+        }
+
+        // Ordenar los elementos con la función de utilidad existente
+        return PagingUtil.paginateAndSort(allArticles, pageRequestCustom, article -> {
+            if ("name".equalsIgnoreCase(sort)) {
+                return article.getName();
+            }
+            // Añadir otros campos de ordenamiento si se necesitan
+            return article.getName(); // Default: Ordenar por nombre
+        });
     }
 }

@@ -1,7 +1,7 @@
 package com.microservicio.stock.infraestructure.controllers;
-
 import com.microservicio.stock.application.dto.ArticleDTO;
 import com.microservicio.stock.application.handler.ArticleHandler;
+import com.microservicio.stock.domain.util.pageable.PageRequestCustom;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -12,14 +12,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import java.util.List;
 @RestController
 @RequestMapping("/articles")
 @AllArgsConstructor
 public class ArticleController {
-
     private final ArticleHandler articleHandler;
-
     @Operation(summary = "Crea un nuevo artículo", description = "Endpoint para crear un artículo en el sistema.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Artículo creado exitosamente"),
@@ -34,8 +32,7 @@ public class ArticleController {
         ArticleDTO newArticle = articleHandler.createArticle(articleDTO);
         return new ResponseEntity<>(newArticle, HttpStatus.CREATED);
     }
-
-    @Operation(summary = "Obtiene una lista de artículos", description = "Devuelve una lista paginada de todos los artículos disponibles.")
+    @Operation(summary = "Obtiene una lista de artículos", description = "Devuelve una lista paginada de todos los artículos disponibles, con opciones de filtrado y ordenamiento.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lista de artículos obtenida exitosamente"),
             @ApiResponse(responseCode = "400", description = "Parámetros de consulta inválidos"),
@@ -44,9 +41,31 @@ public class ArticleController {
     })
     @GetMapping
     public ResponseEntity<Page<ArticleDTO>> listArticles(
-            @Parameter(description = "Parámetros de paginación y ordenación", example = "page=0&size=10&sort=name,asc")
+            @Parameter(description = "Nombre del artículo para filtrar (opcional)", example = "Laptop")
+            @RequestParam(value = "name", required = false) String name,
+
+            @Parameter(description = "Campo por el cual ordenar los resultados (por defecto: 'name')", example = "name")
+            @RequestParam(value = "sort", defaultValue = "name") String sort,
+
+            @Parameter(description = "Dirección del ordenamiento: 'asc' para ascendente o 'desc' para descendente (por defecto: 'asc')", example = "asc")
+            @RequestParam(value = "direction", defaultValue = "asc") String direction,
+
+            @Parameter(description = "Lista de nombres de categorías para filtrar (opcional)", example = "Electronics,Books")
+            @RequestParam(value = "categoryNames", required = false) List<String> categoryNames,
+
+            @Parameter(description = "Información de paginación (página y tamaño)", example = "page=0&size=10")
             Pageable pageable) {
-        Page<ArticleDTO> articles = articleHandler.listArticles(pageable);
+
+        // Crear un nuevo PageRequestCustom con la dirección de ordenamiento obtenida de los parámetros
+        PageRequestCustom pageRequestCustom = new PageRequestCustom(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                "asc".equalsIgnoreCase(direction)
+        );
+
+        // Obtener los artículos filtrados y ordenados
+        Page<ArticleDTO> articles = articleHandler.listArticles(pageRequestCustom, name, sort, categoryNames);
+
         return ResponseEntity.ok(articles);
     }
 }
