@@ -9,7 +9,7 @@ import java.util.List;
 public interface ArticleOut {
 
     Article save(Article article);
-    ArticleCategory saveArticleCategory(ArticleCategory articleCategory);
+    void saveArticleCategory(ArticleCategory articleCategory);
     boolean existByName(String name);
     List<Article> findAll();
     Category findCategoryById(Long id);
