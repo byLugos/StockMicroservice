@@ -14,18 +14,14 @@ public class PagingUtil {
                     return pageRequestCustom.isAscending() ? comparison : -comparison;
                 })
                 .toList();
-
         // Calcular inicio y final para la sublista de la página actual
         int start = pageRequestCustom.getPage() * pageRequestCustom.getSize();
         int end = Math.min(start + pageRequestCustom.getSize(), sortedItems.size());
-
         // Crear la sublista para la página actual
         List<T> paginatedItems = sortedItems.subList(start, end);
-
         // Calcular el número total de páginas
         int totalElements = sortedItems.size();
         int totalPages = totalElements == 0 ? 0 : (int) Math.ceil((double) totalElements / pageRequestCustom.getSize());
-
         // Devolver el objeto PageCustom con los elementos paginados y la información adicional
         return new PageCustom<>(paginatedItems, totalElements, totalPages, pageRequestCustom.getPage(), pageRequestCustom.isAscending());
     }

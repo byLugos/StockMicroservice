@@ -63,12 +63,12 @@ class CategoryServiceTest {
 
         PageRequestCustom pageRequestCustom = new PageRequestCustom(0, 2,true);
 
-        PageCustom<Category> result = categoryService.listCategory(pageRequestCustom);
+        PageCustom<Category> result = categoryService.listCategory(pageRequestCustom,"Category1","asc");
 
         verify(categoryOut).findAll();
 
         assertNotNull(result);
-        assertEquals(2, result.getContent().size());
+        assertEquals(1, result.getContent().size());
         assertEquals("Category1", result.getContent().get(0).getName());
     }
 }
