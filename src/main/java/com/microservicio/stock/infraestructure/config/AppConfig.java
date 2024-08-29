@@ -9,6 +9,8 @@ import com.microservicio.stock.domain.ports.spi.CategoryOut;
 import com.microservicio.stock.domain.service.ArticleService;
 import com.microservicio.stock.domain.service.BrandService;
 import com.microservicio.stock.domain.service.CategoryService;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,5 +31,13 @@ public class AppConfig {
     @Bean
     public ArticleIn articleIn(ArticleOut articleOut){
         return new ArticleService(articleOut);
+    }
+    @Bean
+    public OpenAPI customOpenAPI() {
+        return new OpenAPI()
+                .info(new Info()
+                        .title("Microservicio de Stock")
+                        .version("1.0.0")
+                        .description("Microservicio para la gestión de Stock de la empresa Emazon"));
     }
 }
