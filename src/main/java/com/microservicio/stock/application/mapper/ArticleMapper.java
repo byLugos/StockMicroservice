@@ -11,29 +11,17 @@ import java.util.Collections;
 import java.util.List;
 @Mapper(componentModel = "spring")
 public interface ArticleMapper {
-    @Mapping(target = "categories", ignore = true)
+    @Mapping(target = "categories", ignore = true)  // Ignorar el mapeo directo de categorías
     Article toEntity(ArticleDTO articleDTO);
     @Mapping(target = "categories", source = "categories", qualifiedByName = "mapCategoriesToIds")
-    @Mapping(target = "categoryNames", source = "categories", qualifiedByName = "mapCategoriesToNames")
     ArticleDTO toDTO(Article article);
     @Named("mapCategoriesToIds")
-    default List<Long> mapCategoriesToIds(List<ArticleCategory> articleCategories) {
-        if (articleCategories == null) {
+    default List<Long> mapCategoriesToIds(List<ArticleCategory> categories) {
+        if (categories == null) {
             return Collections.emptyList();
         }
-        return articleCategories.stream()
+        return categories.stream()
                 .map(articleCategory -> articleCategory.getCategory().getId())
-                .distinct()
-                .toList();
-    }
-    @Named("mapCategoriesToNames")
-    default List<String> mapCategoriesToNames(List<ArticleCategory> articleCategories) {
-        if (articleCategories == null) {
-            return Collections.emptyList();
-        }
-        return articleCategories.stream()
-                .map(articleCategory -> articleCategory.getCategory().getName())
-                .distinct()
                 .toList();
     }
 }

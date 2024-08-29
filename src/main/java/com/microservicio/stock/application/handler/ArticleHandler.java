@@ -4,17 +4,9 @@ import com.microservicio.stock.application.dto.ArticleDTO;
 import com.microservicio.stock.application.mapper.ArticleMapper;
 import com.microservicio.stock.domain.model.Article;
 import com.microservicio.stock.domain.ports.api.ArticleIn;
-import com.microservicio.stock.domain.util.pageable.PageCustom;
-import com.microservicio.stock.domain.util.pageable.PageRequestCustom;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-
 
 @Service
 @Transactional
@@ -23,7 +15,10 @@ public class ArticleHandler {
     private final ArticleIn articleIn;
     private final ArticleMapper articleMapper;
     public ArticleDTO createArticle(ArticleDTO articleDTO) {
+        // Convertir DTO a entidad de dominio
         Article article = articleMapper.toEntity(articleDTO);
+
+        // Crear el artículo utilizando el puerto de entrada
         Article newArticle = articleIn.createArticle(
                 article.getName(),
                 article.getDescription(),
@@ -31,14 +26,9 @@ public class ArticleHandler {
                 article.getPrice(),
                 articleDTO.getCategories()
         );
-        return articleMapper.toDTO(newArticle);
-    }
-    public Page<ArticleDTO> listArticles(Pageable pageable) {
-        PageRequestCustom pageRequestCustom = new PageRequestCustom(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort().isSorted());
-        PageCustom<Article> pageCustom = articleIn.listArticle(pageRequestCustom);
-        List<ArticleDTO> articleDTOs = pageCustom.getContent().stream()
-                .map(articleMapper::toDTO)
-                .toList();
-        return new PageImpl<>(articleDTOs, pageable, pageCustom.getTotalElements());
+        // Vuelve a mapear el artículo y asegúrate de incluir las categorías
+        ArticleDTO result = articleMapper.toDTO(newArticle);
+        result.setCategories(articleDTO.getCategories());  // Incluye manualmente los IDs de categoría
+        return result;
     }
 }
