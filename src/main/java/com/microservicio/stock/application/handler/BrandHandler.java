@@ -1,5 +1,4 @@
 package com.microservicio.stock.application.handler;
-
 import com.microservicio.stock.application.dto.BrandDTO;
 import com.microservicio.stock.application.mapper.BrandMapper;
 import com.microservicio.stock.application.mapper.PageMapper;
@@ -11,15 +10,11 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-
 @Service
 @AllArgsConstructor
 public class BrandHandler {
-
     private final BrandIn brandIn;
     private final BrandMapper brandMapper;
-
     public BrandDTO createBrand(BrandDTO brandDTO) {
 
         Brand brand = brandMapper.toEntity(brandDTO);
@@ -28,13 +23,9 @@ public class BrandHandler {
 
         return brandMapper.toDTO(newBrand);
     }
-
     public Page<BrandDTO> listBrands(Pageable pageable) {
-        //parsear Pageable Spring a PageRequestCustom
         PageRequestCustom pageRequestCustom = new PageRequestCustom(pageable.getPageNumber(),pageable.getPageSize(),pageable.getSort().isSorted());
-        //usar la interfaz de dominio
         PageCustom<Brand> pageCustom = brandIn.listBrand(pageRequestCustom);
-        //convertir PageCustom a Page de Spring y mapearDTOS
         return PageMapper.toSpringPage(
                 new PageCustom<>(
                         pageCustom.getContent().stream().map(brandMapper::toDTO).toList(),
