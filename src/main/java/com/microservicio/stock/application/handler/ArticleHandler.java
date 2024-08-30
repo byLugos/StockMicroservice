@@ -24,14 +24,15 @@ public class ArticleHandler {
                 article.getDescription(),
                 article.getQuantity(),
                 article.getPrice(),
-                articleDTO.getCategories()
+                articleDTO.getCategories(),
+                articleDTO.getBrandId()
         );
         return articleMapper.toDTO(newArticle);
     }
-    public Page<ArticleDTO> listArticles(PageRequestCustom pageRequestCustom, String name, String sort, List<String> categoryNames) {
-        // Realizar la búsqueda y ordenamiento con los parámetros proporcionados
-        PageCustom<Article> pageCustom = articleIn.listArticle(pageRequestCustom, name, sort, categoryNames);
-        // Convertir la página personalizada en una página de Spring
+    public Page<ArticleDTO> listArticles(PageRequestCustom pageRequestCustom, String name, String sort, List<String> categoryNames, String brandName) {
+        // Pasamos el brandName al servicio de dominio
+        PageCustom<Article> pageCustom = articleIn.listArticle(pageRequestCustom, name, sort, categoryNames, brandName);
+
         return PageMapper.toSpringPage(
                 new PageCustom<>(
                         pageCustom.getContent().stream().map(articleMapper::toDTO).toList(),
@@ -43,3 +44,4 @@ public class ArticleHandler {
         );
     }
 }
+

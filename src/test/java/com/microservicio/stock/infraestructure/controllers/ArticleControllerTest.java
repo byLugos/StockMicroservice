@@ -1,99 +1,73 @@
 package com.microservicio.stock.infraestructure.controllers;
-
 import com.microservicio.stock.application.dto.ArticleDTO;
 import com.microservicio.stock.application.handler.ArticleHandler;
+import com.microservicio.stock.domain.util.pageable.PageRequestCustom;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.List;
-
+import java.util.Objects;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 class ArticleControllerTest {
 
+    @Mock
     private ArticleHandler articleHandler;
+
+    @InjectMocks
     private ArticleController articleController;
 
     @BeforeEach
     void setUp() {
-        articleHandler = mock(ArticleHandler.class);
-        articleController = new ArticleController(articleHandler);
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    void testCreateArticle_Success() {
-        // Configura el DTO de entrada y el resultado esperado
-        ArticleDTO articleDTO = new ArticleDTO();
-        articleDTO.setName("New Article");
-        articleDTO.setDescription("Description");
-        articleDTO.setQuantity(10);
-        articleDTO.setPrice(BigDecimal.valueOf(100));
+    void testCreateArticle() {
+        // Datos de prueba
+        ArticleDTO articleDTO = new ArticleDTO(null, "Laptop", "High-end gaming laptop", 10, new BigDecimal("1500.00"), List.of(1L, 2L), List.of("Electronics", "Computers"), 1L, "BrandA");
+        ArticleDTO savedArticleDTO = new ArticleDTO(1L, "Laptop", "High-end gaming laptop", 10, new BigDecimal("1500.00"), List.of(1L, 2L), List.of("Electronics", "Computers"), 1L, "BrandA");
 
-        ArticleDTO savedArticleDTO = new ArticleDTO();
-        savedArticleDTO.setId(1L);
-        savedArticleDTO.setName("New Article");
-        savedArticleDTO.setDescription("Description");
-        savedArticleDTO.setQuantity(10);
-        savedArticleDTO.setPrice(BigDecimal.valueOf(100));
+        // Configuración de los mocks
+        when(articleHandler.createArticle(any(ArticleDTO.class))).thenReturn(savedArticleDTO);
 
-        // Configura el comportamiento del handler
-        when(articleHandler.createArticle(articleDTO)).thenReturn(savedArticleDTO);
-
-        // Llama al método a probar
+        // Llamada al método a probar
         ResponseEntity<ArticleDTO> response = articleController.createArticle(articleDTO);
 
-        // Verifica que el handler fue llamado correctamente
-        verify(articleHandler).createArticle(articleDTO);
-
-        // Verifica los resultados
-        assertNotNull(response);
+        // Verificaciones
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals(savedArticleDTO, response.getBody());
+        verify(articleHandler).createArticle(articleDTO);
     }
 
     @Test
-    void testListArticles_Success() {
-        // Configura una lista simulada de artículos
-        ArticleDTO articleDTO1 = new ArticleDTO();
-        articleDTO1.setId(1L);
-        articleDTO1.setName("Article1");
-        articleDTO1.setDescription("Description1");
-        articleDTO1.setQuantity(5);
-        articleDTO1.setPrice(BigDecimal.valueOf(50));
+    void testListArticles() {
+        // Datos de prueba
+        ArticleDTO articleDTO = new ArticleDTO(1L, "Laptop", "High-end gaming laptop", 10, new BigDecimal("1500.00"), List.of(1L, 2L), List.of("Electronics", "Computers"), 1L, "BrandA");
+        Page<ArticleDTO> pageResult = new PageImpl<>(List.of(articleDTO));
+        Pageable pageable = PageRequest.of(0, 10);
 
-        ArticleDTO articleDTO2 = new ArticleDTO();
-        articleDTO2.setId(2L);
-        articleDTO2.setName("Article2");
-        articleDTO2.setDescription("Description2");
-        articleDTO2.setQuantity(3);
-        articleDTO2.setPrice(BigDecimal.valueOf(30));
+        // Configuración de los mocks
+        when(articleHandler.listArticles(any(PageRequestCustom.class), anyString(), anyString(), anyList(), anyString())).thenReturn(pageResult);
 
-        List<ArticleDTO> articles = Arrays.asList(articleDTO1, articleDTO2);
-        Page<ArticleDTO> articlePage = new PageImpl<>(articles);
+        // Llamada al método a probar
+        ResponseEntity<Page<ArticleDTO>> response = articleController.listArticles("Laptop", "name", "asc", List.of("Electronics"), "BrandA", pageable);
 
-        // Configura el comportamiento del handler
-        Pageable pageable = PageRequest.of(0, 2);
-        when(articleHandler.listArticles(pageable)).thenReturn(articlePage);
-
-        // Llama al método a probar
-        ResponseEntity<Page<ArticleDTO>> response = articleController.listArticles(pageable);
-
-        // Verifica que el handler fue llamado correctamente
-        verify(articleHandler).listArticles(pageable);
-
-        // Verifica los resultados
-        assertNotNull(response);
+        // Verificaciones
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(articlePage, response.getBody());
+        assertEquals(1, Objects.requireNonNull(response.getBody()).getTotalElements());
+        assertEquals(articleDTO, response.getBody().getContent().get(0));
+        verify(articleHandler).listArticles(any(PageRequestCustom.class), eq("Laptop"), eq("name"), eq(List.of("Electronics")), eq("BrandA"));
     }
 }

@@ -53,6 +53,9 @@ public class ArticleController {
             @Parameter(description = "Lista de nombres de categorías para filtrar (opcional)", example = "Electronics,Books")
             @RequestParam(value = "categoryNames", required = false) List<String> categoryNames,
 
+            @Parameter(description = "Nombre de la marca para filtrar (opcional)", example = "Apple")
+            @RequestParam(value = "brandName", required = false) String brandName,  // Añadimos el parámetro brandName
+
             @Parameter(description = "Información de paginación (página y tamaño)", example = "page=0&size=10")
             Pageable pageable) {
 
@@ -63,8 +66,8 @@ public class ArticleController {
                 "asc".equalsIgnoreCase(direction)
         );
 
-        // Obtener los artículos filtrados y ordenados
-        Page<ArticleDTO> articles = articleHandler.listArticles(pageRequestCustom, name, sort, categoryNames);
+        // Obtener los artículos filtrados y ordenados, incluyendo el filtrado por nombre de la marca
+        Page<ArticleDTO> articles = articleHandler.listArticles(pageRequestCustom, name, sort, categoryNames, brandName);
 
         return ResponseEntity.ok(articles);
     }

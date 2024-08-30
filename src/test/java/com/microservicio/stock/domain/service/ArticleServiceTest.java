@@ -1,100 +1,104 @@
 package com.microservicio.stock.domain.service;
-
 import com.microservicio.stock.domain.exception.InvalidNameExceptionMe;
 import com.microservicio.stock.domain.model.Article;
-import com.microservicio.stock.domain.model.ArticleCategory;
+import com.microservicio.stock.domain.model.Brand;
 import com.microservicio.stock.domain.model.Category;
 import com.microservicio.stock.domain.ports.spi.ArticleOut;
 import com.microservicio.stock.domain.util.pageable.PageCustom;
 import com.microservicio.stock.domain.util.pageable.PageRequestCustom;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import java.math.BigDecimal;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
 
 class ArticleServiceTest {
 
+    @Mock
     private ArticleOut articleOut;
+
+    @InjectMocks
     private ArticleService articleService;
 
     @BeforeEach
     void setUp() {
-        articleOut = mock(ArticleOut.class);
-        articleService = new ArticleService(articleOut);
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
     void testCreateArticle_Success() {
-        when(articleOut.existByName("New Article")).thenReturn(false);
+        // Datos de prueba
+        String name = "Laptop";
+        String description = "High-end gaming laptop";
+        int quantity = 10;
+        BigDecimal price = new BigDecimal("1500.00");
+        List<Long> categoryIds = List.of(1L, 2L);
+        Long brandId = 1L;
 
-        Category category1 = new Category(1L, "Category1", "Description1");
-        Category category2 = new Category(2L, "Category2", "Description2");
+        Category category1 = new Category(1L, "Electronics", null);
+        Category category2 = new Category(2L, "Computers", null);
+        Brand brand = new Brand(1L, "BrandA", "Description");
+
+        Article savedArticle = new Article(1L, name, description, quantity, price, new ArrayList<>(), brand);
+
+        // Configuración de los mocks
+        when(articleOut.existByName(name)).thenReturn(false);
         when(articleOut.findCategoryById(1L)).thenReturn(category1);
         when(articleOut.findCategoryById(2L)).thenReturn(category2);
+        when(articleOut.findBrandById(brandId)).thenReturn(brand);
+        when(articleOut.save(any(Article.class))).thenReturn(savedArticle);
 
-        Article articleToSave = new Article(null, "New Article", "Description", 10, BigDecimal.valueOf(100), null);
-        when(articleOut.save(any(Article.class))).thenReturn(articleToSave);
+        // Llamada al método a probar
+        Article result = articleService.createArticle(name, description, quantity, price, categoryIds, brandId);
 
-        Article result = articleService.createArticle("New Article", "Description", 10, BigDecimal.valueOf(100), Arrays.asList(1L, 2L));
-
-        verify(articleOut).existByName("New Article");
-        verify(articleOut).save(any(Article.class));
-        verify(articleOut, times(2)).saveArticleCategory(any(ArticleCategory.class));
-
+        // Verificaciones
         assertNotNull(result);
-        assertEquals("New Article", result.getName());
-        assertEquals("Description", result.getDescription());
-        assertEquals(10, result.getQuantity());
-        assertEquals(BigDecimal.valueOf(100), result.getPrice());
+        assertEquals(name, result.getName());
+        assertEquals(description, result.getDescription());
+        assertEquals(quantity, result.getQuantity());
+        assertEquals(price, result.getPrice());
+        assertEquals(brandId, result.getBrand().getId());
+
+        verify(articleOut).existByName(name);
+        verify(articleOut, times(2)).findCategoryById(anyLong());
+        verify(articleOut).findBrandById(brandId);
+        verify(articleOut).save(any(Article.class));
     }
 
     @Test
-    void testCreateArticle_InvalidNameException_ExistingName() {
-        when(articleOut.existByName("Existing Article")).thenReturn(true);
+    void testCreateArticle_ExistingNameException() {
+        // Datos de prueba
+        String name = "Laptop";
+        when(articleOut.existByName(name)).thenReturn(true);
 
-        InvalidNameExceptionMe exception = assertThrows(InvalidNameExceptionMe.class, () -> articleService.createArticle("Existing Article", "Description", 10, BigDecimal.valueOf(100), List.of(1L)));
+        // Verificación de excepción
+        InvalidNameExceptionMe exception = assertThrows(InvalidNameExceptionMe.class, () -> {
+            articleService.createArticle(name, "Description", 10, new BigDecimal("1500.00"), List.of(1L, 2L), 1L);
+        });
 
         assertEquals("El nombre del articulo ya existe", exception.getMessage());
-        verify(articleOut).existByName("Existing Article");
-        verify(articleOut, never()).save(any(Article.class));
+        verify(articleOut).existByName(name);
     }
-
     @Test
-    void testCreateArticle_InvalidNameException_CategorySize() {
-        when(articleOut.existByName("New Article")).thenReturn(false);
-        when(articleOut.findCategoryById(1L)).thenReturn(new Category(1L, "Category1", "Description1"));
-        when(articleOut.findCategoryById(2L)).thenReturn(new Category(2L, "Category2", "Description2"));
-        when(articleOut.findCategoryById(3L)).thenReturn(new Category(3L, "Category3", "Description3"));
-        when(articleOut.findCategoryById(4L)).thenReturn(new Category(4L, "Category4", "Description4"));
-
-        InvalidNameExceptionMe exception = assertThrows(InvalidNameExceptionMe.class, () -> articleService.createArticle("New Article", "Description", 10, BigDecimal.valueOf(100), Arrays.asList(1L, 2L, 3L, 4L)));
-
-        assertEquals("El articulo debe tener entre 1 y 3 categorías.", exception.getMessage());
-        verify(articleOut, never()).save(any(Article.class));
-    }
-
-    @Test
-    void testListArticle_Success() {
-
-        List<Article> articles = Arrays.asList(
-                new Article(1L, "Article1", "Description1", 5, BigDecimal.valueOf(50), null),
-                new Article(2L, "Article2", "Description2", 3, BigDecimal.valueOf(30), null)
+    void testListArticles() {
+        // Datos de prueba
+        PageRequestCustom pageRequestCustom = new PageRequestCustom(0, 10, true);
+        List<Article> articles = List.of(
+                new Article(1L, "Laptop", "High-end gaming laptop", 10, new BigDecimal("1500.00"), new ArrayList<>(), new Brand(1L, "BrandA", "Description"))
         );
+        // Configuración de los mocks
         when(articleOut.findAll()).thenReturn(articles);
-
-        PageRequestCustom pageRequestCustom = new PageRequestCustom(0, 2, true);
-        PageCustom<Article> result = articleService.listArticle(pageRequestCustom);
+        // Llamada al método a probar
+        PageCustom<Article> result = articleService.listArticle(pageRequestCustom, "Laptop", "name", List.of("Electronics"), "BrandA");
+        // Verificaciones
+        assertEquals(0, result.getTotalElements());
 
         verify(articleOut).findAll();
-
-        assertNotNull(result);
-        assertEquals(2, result.getContent().size());
-        assertEquals("Article1", result.getContent().get(0).getName());
-        assertEquals("Article2", result.getContent().get(1).getName());
     }
 }

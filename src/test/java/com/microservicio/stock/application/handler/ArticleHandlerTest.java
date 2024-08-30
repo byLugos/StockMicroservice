@@ -8,108 +8,78 @@ import com.microservicio.stock.domain.util.pageable.PageCustom;
 import com.microservicio.stock.domain.util.pageable.PageRequestCustom;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 class ArticleHandlerTest {
 
+    @Mock
     private ArticleIn articleIn;
+
+    @Mock
     private ArticleMapper articleMapper;
+
+    @InjectMocks
     private ArticleHandler articleHandler;
 
     @BeforeEach
     void setUp() {
-        articleIn = mock(ArticleIn.class);
-        articleMapper = mock(ArticleMapper.class);
-        articleHandler = new ArticleHandler(articleIn, articleMapper);
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    void testCreateArticle_Success() {
-        ArticleDTO articleDTO = new ArticleDTO();
-        articleDTO.setName("New Article");
-        articleDTO.setDescription("Description");
-        articleDTO.setQuantity(10);
-        articleDTO.setPrice(BigDecimal.valueOf(100));
-        articleDTO.setCategories(Arrays.asList(1L, 2L));
+    void testCreateArticle() {
+        // Datos de prueba
+        ArticleDTO articleDTO = new ArticleDTO(null, "Laptop", "High-end gaming laptop", 10, new BigDecimal("1500.00"), List.of(1L, 2L), List.of("Electronics", "Computers"), 1L, "BrandA");
+        Article article = new Article(null, "Laptop", "High-end gaming laptop", 10, new BigDecimal("1500.00"), null, null);
+        Article savedArticle = new Article(1L, "Laptop", "High-end gaming laptop", 10, new BigDecimal("1500.00"), null, null);
 
-        Article articleEntity = new Article(null, "New Article", "Description", 10, BigDecimal.valueOf(100), null);
-        Article savedArticle = new Article(1L, "New Article", "Description", 10, BigDecimal.valueOf(100), null);
-
-        when(articleMapper.toEntity(articleDTO)).thenReturn(articleEntity);
-        when(articleIn.createArticle(anyString(), anyString(), anyInt(), any(BigDecimal.class), anyList())).thenReturn(savedArticle);
+        // Configuración de los mocks
+        when(articleMapper.toEntity(articleDTO)).thenReturn(article);
+        when(articleIn.createArticle(anyString(), anyString(), anyInt(), any(BigDecimal.class), anyList(), anyLong())).thenReturn(savedArticle);
         when(articleMapper.toDTO(savedArticle)).thenReturn(articleDTO);
 
+        // Llamada al método a probar
         ArticleDTO result = articleHandler.createArticle(articleDTO);
 
-        verify(articleMapper).toEntity(articleDTO);
-        verify(articleIn).createArticle(articleEntity.getName(), articleEntity.getDescription(), articleEntity.getQuantity(), articleEntity.getPrice(), articleDTO.getCategories());
-        verify(articleMapper).toDTO(savedArticle);
-
-        assertNotNull(result);
+        // Verificaciones
         assertEquals(articleDTO.getName(), result.getName());
         assertEquals(articleDTO.getDescription(), result.getDescription());
+        assertEquals(articleDTO.getPrice(), result.getPrice());
+        verify(articleMapper).toEntity(articleDTO);
+        verify(articleIn).createArticle(article.getName(), article.getDescription(), article.getQuantity(), article.getPrice(), articleDTO.getCategories(), articleDTO.getBrandId());
+        verify(articleMapper).toDTO(savedArticle);
     }
 
     @Test
-    void testListArticles_Success() {
-        Article article1 = new Article(1L, "Article1", "Description1", 5, BigDecimal.valueOf(50), null);
-        Article article2 = new Article(2L, "Article2", "Description2", 3, BigDecimal.valueOf(30), null);
-        List<Article> articles = Arrays.asList(article1, article2);
-        List<ArticleDTO> articleDTOs = Arrays.asList(
-                new ArticleDTO(),
-                new ArticleDTO()
+    void testListArticles() {
+        // Datos de prueba
+        PageRequestCustom pageRequestCustom = new PageRequestCustom(0, 10, true);
+        List<Article> articles = List.of(
+                new Article(1L, "Laptop", "High-end gaming laptop", 10, new BigDecimal("1500.00"), null, null)
         );
+        PageCustom<Article> pageCustom = new PageCustom<>(articles, 1, 1, 0, true);
 
-        articleDTOs.get(0).setId(1L);
-        articleDTOs.get(0).setName("Article1");
-        articleDTOs.get(0).setDescription("Description1");
-        articleDTOs.get(0).setQuantity(5);
-        articleDTOs.get(0).setPrice(BigDecimal.valueOf(50));
-        articleDTOs.get(0).setCategories(List.of(1L));
+        ArticleDTO articleDTO = new ArticleDTO(1L, "Laptop", "High-end gaming laptop", 10, new BigDecimal("1500.00"), List.of(1L, 2L), List.of("Electronics", "Computers"), 1L, "BrandA");
 
-        articleDTOs.get(1).setId(2L);
-        articleDTOs.get(1).setName("Article2");
-        articleDTOs.get(1).setDescription("Description2");
-        articleDTOs.get(1).setQuantity(3);
-        articleDTOs.get(1).setPrice(BigDecimal.valueOf(30));
-        articleDTOs.get(1).setCategories(List.of(2L));
+        // Configuración de los mocks
+        when(articleIn.listArticle(any(PageRequestCustom.class), anyString(), anyString(), anyList(), anyString())).thenReturn(pageCustom);
+        when(articleMapper.toDTO(any(Article.class))).thenReturn(articleDTO);
 
-        PageRequestCustom pageRequestCustom = new PageRequestCustom(0, 2, true);
-        PageCustom<Article> pageCustom = new PageCustom<>(
-                articles,
-                articles.size(),
-                (int) Math.ceil((double) articles.size() / pageRequestCustom.getSize()),
-                pageRequestCustom.getPage(),
-                pageRequestCustom.isAscending()
-        );
-        when(articleIn.listArticle(any(PageRequestCustom.class))).thenReturn(pageCustom);
-        when(articleMapper.toDTO(article1)).thenReturn(articleDTOs.get(0));
-        when(articleMapper.toDTO(article2)).thenReturn(articleDTOs.get(1));
+        // Llamada al método a probar
+        Page<ArticleDTO> result = articleHandler.listArticles(pageRequestCustom, "Laptop", "name", List.of("Electronics"), "BrandA");
 
-        Pageable pageable = PageRequest.of(0, 2);
-        Page<ArticleDTO> result = articleHandler.listArticles(pageable);
-
-        ArgumentCaptor<PageRequestCustom> pageRequestCaptor = ArgumentCaptor.forClass(PageRequestCustom.class);
-        verify(articleIn).listArticle(pageRequestCaptor.capture());
-        assertEquals(0, pageRequestCaptor.getValue().getPage());
-        assertEquals(2, pageRequestCaptor.getValue().getSize());
-
-        verify(articleMapper).toDTO(article1);
-        verify(articleMapper).toDTO(article2);
-
-        assertNotNull(result);
-        assertEquals(2, result.getContent().size());
-        assertEquals(articleDTOs.get(0).getName(), result.getContent().get(0).getName());
-        assertEquals(articleDTOs.get(1).getName(), result.getContent().get(1).getName());
+        // Verificaciones
+        assertEquals(1, result.getTotalElements());
+        assertEquals("Laptop", result.getContent().get(0).getName());
+        verify(articleIn).listArticle(any(PageRequestCustom.class), eq("Laptop"), eq("name"), eq(List.of("Electronics")), eq("BrandA"));
+        verify(articleMapper, times(articles.size())).toDTO(any(Article.class));
     }
 }

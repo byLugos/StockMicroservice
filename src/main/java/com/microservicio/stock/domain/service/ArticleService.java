@@ -19,43 +19,44 @@ public class ArticleService implements ArticleIn {
         this.articleOut = articleOut;
     }
     @Override
-    public Article createArticle(String name, String description, int quantity, BigDecimal price, List<Long> categoryIds) {
+    public Article createArticle(String name, String description, int quantity, BigDecimal price, List<Long> categoryIds, Long brandId) {
         ArticleValidator.validateName(name);
-        ArticleValidator.validateDescription(name);
-        if (articleOut.existByName(name)){
+        ArticleValidator.validateDescription(description);
+        if (articleOut.existByName(name)) {
             throw new InvalidNameExceptionMe("El nombre del articulo ya existe");
         }
-        // Validar categorías y crear relaciones de muchos a muchos
         List<Category> categories = categoryIds.stream()
                 .map(articleOut::findCategoryById)
-                .distinct() //no haya categorías duplicadas
+                .distinct()
                 .toList();
 
         if (categories.isEmpty() || categories.size() > 3) {
             throw new InvalidNameExceptionMe("El articulo debe tener entre 1 y 3 categorías.");
         }
 
-        Article newArticle = new Article(null, name, description, quantity, price, null);
+        Brand brand = articleOut.findBrandById(brandId);
+        if (brand == null) {
+            throw new InvalidNameExceptionMe("La marca proporcionada no existe.");
+        }
+
+        Article newArticle = new Article(null, name, description, quantity, price, null, brand);
         Article savedArticle = articleOut.save(newArticle);
 
         for (Category category : categories) {
             ArticleCategory articleCategory = new ArticleCategory(null, savedArticle, category);
             articleOut.saveArticleCategory(articleCategory);
         }
-
         return savedArticle;
     }
     @Override
-    public PageCustom<Article> listArticle(PageRequestCustom pageRequestCustom, String name, String sort, List<String> categoryNames) {
+    public PageCustom<Article> listArticle(PageRequestCustom pageRequestCustom, String name, String sort, List<String> categoryNames, String brandName) {
         List<Article> allArticles = articleOut.findAll();
-
         // Filtrar por nombre de artículo si se proporciona
         if (name != null && !name.isEmpty()) {
             allArticles = allArticles.stream()
                     .filter(article -> article.getName().contains(name))
                     .toList();
         }
-
         // Filtrar por nombres de categoría si se proporcionan
         if (categoryNames != null && !categoryNames.isEmpty()) {
             allArticles = allArticles.stream()
@@ -63,13 +64,17 @@ public class ArticleService implements ArticleIn {
                             .anyMatch(cat -> categoryNames.contains(cat.getCategory().getName())))
                     .toList();
         }
-
-        // Ordenar los elementos con la función de utilidad existente
+        // Filtrar por nombre de la marca si se proporciona
+        if (brandName != null && !brandName.isEmpty()) {
+            allArticles = allArticles.stream()
+                    .filter(article -> article.getBrand() != null && article.getBrand().getName().contains(brandName))
+                    .toList();
+        }
+        // Ordenar y paginar los elementos
         return PagingUtil.paginateAndSort(allArticles, pageRequestCustom, article -> {
             if ("name".equalsIgnoreCase(sort)) {
                 return article.getName();
             }
-            // Añadir otros campos de ordenamiento si se necesitan
             return article.getName(); // Default: Ordenar por nombre
         });
     }
