@@ -6,5 +6,5 @@ import com.microservicio.stock.domain.util.pageable.PageRequestCustom;
 
 public interface CategoryIn {
     Category createCategory(String name, String description);
-    PageCustom<Category> listCategory(PageRequestCustom pageRequestCustom);
+    PageCustom<Category> listCategory(PageRequestCustom pageRequestCustom, String name, String sort);
 }

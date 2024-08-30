@@ -2,6 +2,7 @@ package com.microservicio.stock.domain.service;
 
 import com.microservicio.stock.domain.exception.InvalidNameExceptionMe;
 import com.microservicio.stock.domain.model.Brand;
+import com.microservicio.stock.domain.model.Category;
 import com.microservicio.stock.domain.ports.api.BrandIn;
 import com.microservicio.stock.domain.ports.spi.BrandOut;
 import com.microservicio.stock.domain.util.BrandValidator;
@@ -30,8 +31,18 @@ public class BrandService implements BrandIn {
     }
 
     @Override
-    public PageCustom<Brand> listBrand(PageRequestCustom pageRequestCustom) {
+    public PageCustom<Brand> listBrand(PageRequestCustom pageRequestCustom,String name, String sort) {
         List<Brand> allBrands = brandOut.findAll();
-        return PagingUtil.paginateAndSort(allBrands, pageRequestCustom, Brand::getName);
+        if (name != null && !name.isEmpty()) {
+            allBrands = allBrands.stream()
+                    .filter(brand -> brand.getName().contains(name))
+                    .toList();
+        }
+        return PagingUtil.paginateAndSort(allBrands, pageRequestCustom, brand -> {
+            if ("name".equalsIgnoreCase(sort)) {
+                return brand.getName();
+            }
+            return brand.getName();
+        });
     }
 }

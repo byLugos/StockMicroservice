@@ -27,9 +27,20 @@ public class CategoryService implements CategoryIn {
         Category newCategory = new Category(null, name, description);
         return categoryOut.save(newCategory);
     }
+
     @Override
-    public PageCustom<Category> listCategory(PageRequestCustom pageRequestCustom) {
+    public PageCustom<Category> listCategory(PageRequestCustom pageRequestCustom, String name, String sort) {
         List<Category> allCategories = categoryOut.findAll();
-        return PagingUtil.paginateAndSort(allCategories, pageRequestCustom, Category::getName);
+        if (name != null && !name.isEmpty()) {
+            allCategories = allCategories.stream()
+                    .filter(category -> category.getName().contains(name))
+                    .toList();
+        }
+        return PagingUtil.paginateAndSort(allCategories, pageRequestCustom, category -> {
+            if ("name".equalsIgnoreCase(sort)) {
+                return category.getName();
+            }
+            return category.getName();
+        });
     }
 }

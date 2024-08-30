@@ -1,21 +1,16 @@
 package com.microservicio.stock.application.handler;
-
 import com.microservicio.stock.application.dto.ArticleDTO;
 import com.microservicio.stock.application.mapper.ArticleMapper;
+import com.microservicio.stock.application.mapper.PageMapper;
 import com.microservicio.stock.domain.model.Article;
 import com.microservicio.stock.domain.ports.api.ArticleIn;
 import com.microservicio.stock.domain.util.pageable.PageCustom;
 import com.microservicio.stock.domain.util.pageable.PageRequestCustom;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
-
-
 @Service
 @Transactional
 @AllArgsConstructor
@@ -29,16 +24,24 @@ public class ArticleHandler {
                 article.getDescription(),
                 article.getQuantity(),
                 article.getPrice(),
-                articleDTO.getCategories()
+                articleDTO.getCategories(),
+                articleDTO.getBrandId()
         );
         return articleMapper.toDTO(newArticle);
     }
-    public Page<ArticleDTO> listArticles(Pageable pageable) {
-        PageRequestCustom pageRequestCustom = new PageRequestCustom(pageable.getPageNumber(), pageable.getPageSize(), pageable.getSort().isSorted());
-        PageCustom<Article> pageCustom = articleIn.listArticle(pageRequestCustom);
-        List<ArticleDTO> articleDTOs = pageCustom.getContent().stream()
-                .map(articleMapper::toDTO)
-                .toList();
-        return new PageImpl<>(articleDTOs, pageable, pageCustom.getTotalElements());
+    public Page<ArticleDTO> listArticles(PageRequestCustom pageRequestCustom, String name, String sort, List<String> categoryNames, String brandName) {
+        // Pasamos el brandName al servicio de dominio
+        PageCustom<Article> pageCustom = articleIn.listArticle(pageRequestCustom, name, sort, categoryNames, brandName);
+
+        return PageMapper.toSpringPage(
+                new PageCustom<>(
+                        pageCustom.getContent().stream().map(articleMapper::toDTO).toList(),
+                        pageCustom.getTotalElements(),
+                        pageCustom.getTotalPages(),
+                        pageCustom.getCurrentPage(),
+                        pageCustom.isAscending()
+                )
+        );
     }
 }
+

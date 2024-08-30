@@ -12,10 +12,15 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface ArticleMapper {
     @Mapping(target = "categories", ignore = true)
+    @Mapping(target = "brand", ignore = true)
     Article toEntity(ArticleDTO articleDTO);
+
     @Mapping(target = "categories", source = "categories", qualifiedByName = "mapCategoriesToIds")
     @Mapping(target = "categoryNames", source = "categories", qualifiedByName = "mapCategoriesToNames")
+    @Mapping(target = "brandId", source = "brand.id")  // Mapeo del ID de la marca
+    @Mapping(target = "brandName", source = "brand.name")  // Mapeo del nombre de la marca
     ArticleDTO toDTO(Article article);
+
     @Named("mapCategoriesToIds")
     default List<Long> mapCategoriesToIds(List<ArticleCategory> articleCategories) {
         if (articleCategories == null) {
@@ -26,6 +31,7 @@ public interface ArticleMapper {
                 .distinct()
                 .toList();
     }
+
     @Named("mapCategoriesToNames")
     default List<String> mapCategoriesToNames(List<ArticleCategory> articleCategories) {
         if (articleCategories == null) {
@@ -37,3 +43,4 @@ public interface ArticleMapper {
                 .toList();
     }
 }
+

@@ -6,5 +6,5 @@ import com.microservicio.stock.domain.util.pageable.PageRequestCustom;
 
 public interface BrandIn {
     Brand createBrand(String nombre, String descripcion);
-    PageCustom<Brand> listBrand(PageRequestCustom pageRequestCustom);
+    PageCustom<Brand> listBrand(PageRequestCustom pageRequestCustom, String name, String sort);
 }

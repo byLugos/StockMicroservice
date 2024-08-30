@@ -6,7 +6,6 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface JpaBrandMapper {
-
     BrandEntity toEntity(Brand brand);
     Brand toDomain(BrandEntity brandEntity);
 }

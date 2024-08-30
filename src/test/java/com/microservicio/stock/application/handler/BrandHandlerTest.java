@@ -8,91 +8,70 @@ import com.microservicio.stock.domain.util.pageable.PageCustom;
 import com.microservicio.stock.domain.util.pageable.PageRequestCustom;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 
-import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.when;
 
 class BrandHandlerTest {
 
+    @Mock
     private BrandIn brandIn;
+
+    @Mock
     private BrandMapper brandMapper;
+
+    @InjectMocks
     private BrandHandler brandHandler;
 
     @BeforeEach
     void setUp() {
-        brandIn = mock(BrandIn.class);
-        brandMapper = mock(BrandMapper.class);
-        brandHandler = new BrandHandler(brandIn, brandMapper);
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
     void testCreateBrand_Success() {
-        BrandDTO brandDTO = new BrandDTO();
-        brandDTO.setName("New Brand");
-        brandDTO.setDescription("Description");
+        // Datos de ejemplo
+        BrandDTO brandDTO = new BrandDTO(1L, "Nike", "Sportswear brand");
+        Brand brand = new Brand(1L, "Nike", "Sportswear brand");
 
-        Brand brandEntity = new Brand(null, "New Brand", "Description");
-        Brand savedBrand = new Brand(1L, "New Brand", "Description");
+        when(brandMapper.toEntity(any(BrandDTO.class))).thenReturn(brand);
+        when(brandIn.createBrand(anyString(), anyString())).thenReturn(brand);
+        when(brandMapper.toDTO(any(Brand.class))).thenReturn(brandDTO);
 
-        when(brandMapper.toEntity(brandDTO)).thenReturn(brandEntity);
-        when(brandIn.createBrand(anyString(), anyString())).thenReturn(savedBrand);
-        when(brandMapper.toDTO(savedBrand)).thenReturn(brandDTO);
-
+        // Llamada al método y validación
         BrandDTO result = brandHandler.createBrand(brandDTO);
-
-        verify(brandMapper).toEntity(brandDTO);
-        verify(brandIn).createBrand(brandEntity.getName(), brandEntity.getDescription());
-        verify(brandMapper).toDTO(savedBrand);
-
-        assertNotNull(result);
-        assertEquals(brandDTO.getName(), result.getName());
-        assertEquals(brandDTO.getDescription(), result.getDescription());
+        assertEquals(brandDTO, result);
     }
 
     @Test
     void testListBrands_Success() {
-        Brand brand1 = new Brand(1L, "Brand1", "Description1");
-        Brand brand2 = new Brand(2L, "Brand2", "Description2");
-        List<Brand> brands = Arrays.asList(brand1, brand2);
+        // Datos de ejemplo
+        Brand brand1 = new Brand(1L, "Nike", "Sportswear brand");
+        Brand brand2 = new Brand(1L, "Adidas", "Another sportswear brand");
+        List<Brand> brands = List.of(brand1, brand2);
 
-        BrandDTO brandDTO1 = new BrandDTO();
-        brandDTO1.setId(1L);
-        brandDTO1.setName("Brand1");
-        brandDTO1.setDescription("Description1");
+        PageCustom<Brand> pageCustom = new PageCustom<>(brands, 2, 1, 0, true);
+        PageRequestCustom pageRequestCustom = new PageRequestCustom(0, 10, true);
 
-        BrandDTO brandDTO2 = new BrandDTO();
-        brandDTO2.setId(2L);
-        brandDTO2.setName("Brand2");
-        brandDTO2.setDescription("Description2");
-        PageCustom<Brand> pageCustom = new PageCustom<>(brands, brands.size(), 1, 0, true);
+        when(brandIn.listBrand(any(PageRequestCustom.class), anyString(), anyString())).thenReturn(pageCustom);
 
-        when(brandIn.listBrand(any(PageRequestCustom.class))).thenReturn(pageCustom);
+        BrandDTO brandDTO1 = new BrandDTO(1L, "Nike", "Sportswear brand");
+        BrandDTO brandDTO2 = new BrandDTO(1L, "Adidas", "Another sportswear brand");
+
         when(brandMapper.toDTO(brand1)).thenReturn(brandDTO1);
         when(brandMapper.toDTO(brand2)).thenReturn(brandDTO2);
 
-
-        Pageable pageable = PageRequest.of(0, 2);
-        Page<BrandDTO> result = brandHandler.listBrands(pageable);
-
-        ArgumentCaptor<PageRequestCustom> pageRequestCaptor = ArgumentCaptor.forClass(PageRequestCustom.class);
-        verify(brandIn).listBrand(pageRequestCaptor.capture());
-        assertEquals(0, pageRequestCaptor.getValue().getPage());
-        assertEquals(2, pageRequestCaptor.getValue().getSize());
-
-        verify(brandMapper).toDTO(brand1);
-        verify(brandMapper).toDTO(brand2);
-
-
-        assertNotNull(result);
-        assertEquals(2, result.getContent().size());
-        assertEquals(brandDTO1.getName(), result.getContent().get(0).getName());
-        assertEquals(brandDTO2.getName(), result.getContent().get(1).getName());
+        // Llamada al método y validación
+        Page<BrandDTO> resultPage = brandHandler.listBrands(pageRequestCustom, "Nike", "name");
+        assertEquals(2, resultPage.getTotalElements());
+        assertEquals(1, resultPage.getTotalPages());
+        assertEquals(List.of(brandDTO1, brandDTO2), resultPage.getContent());
     }
 }

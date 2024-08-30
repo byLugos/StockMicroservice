@@ -1,6 +1,5 @@
 package com.microservicio.stock.domain.model;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 public class Article {
     private Long id;
@@ -9,14 +8,15 @@ public class Article {
     private int quantity;
     private BigDecimal price;
     private List<ArticleCategory> categories;
-    //lista de categorias
-    public Article(Long id, String name, String description, int quantity, BigDecimal price, List<ArticleCategory> categories) {
+    private Brand brand;
+    public Article(Long id, String name, String description, int quantity, BigDecimal price, List<ArticleCategory> categories, Brand brand) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.quantity = quantity;
         this.price = price;
-        this.categories = categories != null ? categories : new ArrayList<>();
+        this.categories = categories;
+        this.brand = brand;
     }
     public Long getId() {
         return id;
@@ -35,5 +35,8 @@ public class Article {
     }
     public List<ArticleCategory> getCategories() {
         return categories;
+    }
+    public Brand getBrand() {
+        return brand;
     }
 }

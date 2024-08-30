@@ -65,13 +65,12 @@ class BrandServiceTest {
 
         PageRequestCustom pageRequestCustom = new PageRequestCustom(0, 2, true);
 
-        PageCustom<Brand> result = brandService.listBrand(pageRequestCustom);
+        PageCustom<Brand> result = brandService.listBrand(pageRequestCustom,"Brand1","asc");
 
         verify(brandOut).findAll();
 
         assertNotNull(result);
-        assertEquals(2, result.getContent().size());
+        assertEquals(1, result.getContent().size());
         assertEquals("Brand1", result.getContent().get(0).getName());
-        assertEquals("Brand2", result.getContent().get(1).getName());
     }
 }
