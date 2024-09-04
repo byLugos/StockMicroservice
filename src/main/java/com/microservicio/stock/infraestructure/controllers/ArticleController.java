@@ -58,7 +58,6 @@ public class ArticleController {
 
             @Parameter(description = "Información de paginación (página y tamaño)", example = "page=0&size=10")
             Pageable pageable) {
-
         // Crear un nuevo PageRequestCustom con la dirección de ordenamiento obtenida de los parámetros
         PageRequestCustom pageRequestCustom = new PageRequestCustom(
                 pageable.getPageNumber(),

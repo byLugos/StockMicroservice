@@ -20,7 +20,6 @@ public class CategoryJpaOut implements CategoryOut {
     public boolean existByName(String name) {
         return categoryRepository.existsByName(name);
     }
-
     @Override
     public Category save(Category category) {
 
@@ -30,7 +29,6 @@ public class CategoryJpaOut implements CategoryOut {
 
         return jpaCategoryMapper.toDomain(savedEntity);
     }
-
     @Override
     public List<Category> findAll() {
         List<CategoryEntity> entities = categoryRepository.findAll();

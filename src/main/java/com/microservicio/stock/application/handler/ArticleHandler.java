@@ -32,7 +32,6 @@ public class ArticleHandler {
     public Page<ArticleDTO> listArticles(PageRequestCustom pageRequestCustom, String name, String sort, List<String> categoryNames, String brandName) {
         // Pasamos el brandName al servicio de dominio
         PageCustom<Article> pageCustom = articleIn.listArticle(pageRequestCustom, name, sort, categoryNames, brandName);
-
         return PageMapper.toSpringPage(
                 new PageCustom<>(
                         pageCustom.getContent().stream().map(articleMapper::toDTO).toList(),
