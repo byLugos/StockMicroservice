@@ -6,13 +6,11 @@ import com.microservicio.stock.domain.model.ArticleCategory;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
-
 import java.util.Collections;
 import java.util.List;
 @Mapper(componentModel = "spring")
 public interface ArticleMapper {
     @Mapping(target = "categories", ignore = true)
-    @Mapping(target = "brand", ignore = true)
     Article toEntity(ArticleDTO articleDTO);
 
     @Mapping(target = "categories", source = "categories", qualifiedByName = "mapCategoriesToIds")

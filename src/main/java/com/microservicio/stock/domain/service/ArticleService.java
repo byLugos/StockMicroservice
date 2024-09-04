@@ -10,7 +10,6 @@ import com.microservicio.stock.domain.util.ArticleValidator;
 import com.microservicio.stock.domain.util.pageable.PageCustom;
 import com.microservicio.stock.domain.util.pageable.PageRequestCustom;
 import com.microservicio.stock.domain.util.pageable.PagingUtil;
-
 import java.math.BigDecimal;
 import java.util.List;
 public class ArticleService implements ArticleIn {
