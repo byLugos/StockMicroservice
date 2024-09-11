@@ -1,4 +1,4 @@
-package com.microservicio.stock.domain.util.pageable;
+package com.microservicio.stock.domain.pageable;
 
 import java.util.List;
 import java.util.function.Function;

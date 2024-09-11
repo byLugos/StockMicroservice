@@ -4,6 +4,7 @@ import com.microservicio.stock.domain.exception.InvalidDescriptionException;
 import com.microservicio.stock.domain.exception.InvalidNameExceptionMe;
 import com.microservicio.stock.infraestructure.exception.ErrorResponse;
 import com.microservicio.stock.infraestructure.exception.NotFoundCategory;
+import com.microservicio.stock.utils.Constants;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -14,25 +15,25 @@ import org.springframework.web.context.request.WebRequest;
 public class GlobalExceptionHandler {
     @ExceptionHandler(InvalidNameExceptionMe.class)
     public ResponseEntity<ErrorResponse> handleInvalidNameException(InvalidNameExceptionMe ex, WebRequest request) {
-        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), "NOMBRE_INVALIDO");
+        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), Constants.INVALID_NAME);
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(InvalidDescriptionException.class)
     public ResponseEntity<ErrorResponse> handleInvalidDescriptionException(InvalidDescriptionException ex, WebRequest request) {
-        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), "DESCRIPCION_INVALIDA");
+        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), Constants.INVALID_DESCRIPTION);
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(NotFoundCategory.class)
     public ResponseEntity<ErrorResponse> handlerNotFoundCategoryException(NotFoundCategory ex, WebRequest request) {
-        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), "LA CATEGORIA NO SE PUDO ENCONTRAR");
+        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), Constants.CATEGORY_NOT_FOUND);
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGlobalException(Exception ex, WebRequest request) {
-        ErrorResponse errorResponse = new ErrorResponse("Ha ocurrido un error interno. Por favor, inténtalo de nuevo más tarde.", "INTERNAL_SERVER_ERROR");
+        ErrorResponse errorResponse = new ErrorResponse(Constants.GENERIC_ERROR_MESSAGE, Constants.INTERNAL_SERVER_ERROR);
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

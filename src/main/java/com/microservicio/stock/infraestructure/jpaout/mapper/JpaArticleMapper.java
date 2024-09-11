@@ -9,10 +9,10 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring", uses = {JpaArticleCategoryMapper.class, JpaBrandMapper.class})
 public interface JpaArticleMapper {
     @Mapping(target = "categories", source = "categories")
-    @Mapping(target = "brand", source = "brand")  // Agregamos mapeo para la marca
+    @Mapping(target = "brand", source = "brand")
     Article toDomain(ArticleEntity articleEntity);
 
     @Mapping(target = "categories", source = "categories")
-    @Mapping(target = "brand", source = "brand")  // Agregamos mapeo para la marca
+    @Mapping(target = "brand", source = "brand")
     ArticleEntity toEntity(Article article);
 }

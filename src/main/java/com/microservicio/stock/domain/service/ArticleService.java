@@ -6,10 +6,12 @@ import com.microservicio.stock.domain.model.Brand;
 import com.microservicio.stock.domain.model.Category;
 import com.microservicio.stock.domain.ports.api.ArticleIn;
 import com.microservicio.stock.domain.ports.spi.ArticleOut;
-import com.microservicio.stock.domain.util.ArticleValidator;
-import com.microservicio.stock.domain.util.pageable.PageCustom;
-import com.microservicio.stock.domain.util.pageable.PageRequestCustom;
-import com.microservicio.stock.domain.util.pageable.PagingUtil;
+import com.microservicio.stock.domain.validations.ArticleValidator;
+import com.microservicio.stock.domain.pageable.PageCustom;
+import com.microservicio.stock.domain.pageable.PageRequestCustom;
+import com.microservicio.stock.domain.pageable.PagingUtil;
+import com.microservicio.stock.utils.Constants;
+
 import java.math.BigDecimal;
 import java.util.List;
 public class ArticleService implements ArticleIn {
@@ -22,7 +24,7 @@ public class ArticleService implements ArticleIn {
         ArticleValidator.validateName(name);
         ArticleValidator.validateDescription(description);
         if (articleOut.existByName(name)) {
-            throw new InvalidNameExceptionMe("El nombre del articulo ya existe");
+            throw new InvalidNameExceptionMe(com.microservicio.stock.domain.util.Constants.ARTICLE_NAME_EXISTS);
         }
         List<Category> categories = categoryIds.stream()
                 .map(articleOut::findCategoryById)
@@ -30,12 +32,12 @@ public class ArticleService implements ArticleIn {
                 .toList();
 
         if (categories.isEmpty() || categories.size() > 3) {
-            throw new InvalidNameExceptionMe("El articulo debe tener entre 1 y 3 categorías.");
+            throw new InvalidNameExceptionMe(com.microservicio.stock.domain.util.Constants.ARTICLE_INVALID_CATEGORIES);
         }
 
         Brand brand = articleOut.findBrandById(brandId);
         if (brand == null) {
-            throw new InvalidNameExceptionMe("La marca proporcionada no existe.");
+            throw new InvalidNameExceptionMe(com.microservicio.stock.domain.util.Constants.ARTICLE_INVALID_BRAND);
         }
 
         Article newArticle = new Article(null, name, description, quantity, price, null, brand);
@@ -50,31 +52,27 @@ public class ArticleService implements ArticleIn {
     @Override
     public PageCustom<Article> listArticle(PageRequestCustom pageRequestCustom, String name, String sort, List<String> categoryNames, String brandName) {
         List<Article> allArticles = articleOut.findAll();
-        // Filtrar por nombre de artículo si se proporciona
         if (name != null && !name.isEmpty()) {
             allArticles = allArticles.stream()
                     .filter(article -> article.getName().contains(name))
                     .toList();
         }
-        // Filtrar por nombres de categoría si se proporcionan
         if (categoryNames != null && !categoryNames.isEmpty()) {
             allArticles = allArticles.stream()
                     .filter(article -> article.getCategories().stream()
                             .anyMatch(cat -> categoryNames.contains(cat.getCategory().getName())))
                     .toList();
         }
-        // Filtrar por nombre de la marca si se proporciona
         if (brandName != null && !brandName.isEmpty()) {
             allArticles = allArticles.stream()
                     .filter(article -> article.getBrand() != null && article.getBrand().getName().contains(brandName))
                     .toList();
         }
-        // Ordenar y paginar los elementos
         return PagingUtil.paginateAndSort(allArticles, pageRequestCustom, article -> {
-            if ("name".equalsIgnoreCase(sort)) {
+            if (Constants.NAME.equalsIgnoreCase(sort)) {
                 return article.getName();
             }
-            return article.getName(); // Default: Ordenar por nombre
+            return article.getName();
         });
     }
 }

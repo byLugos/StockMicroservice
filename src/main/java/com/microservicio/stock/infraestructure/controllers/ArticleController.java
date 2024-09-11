@@ -1,7 +1,7 @@
 package com.microservicio.stock.infraestructure.controllers;
 import com.microservicio.stock.application.dto.ArticleDTO;
 import com.microservicio.stock.application.handler.ArticleHandler;
-import com.microservicio.stock.domain.util.pageable.PageRequestCustom;
+import com.microservicio.stock.domain.pageable.PageRequestCustom;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -54,18 +54,15 @@ public class ArticleController {
             @RequestParam(value = "categoryNames", required = false) List<String> categoryNames,
 
             @Parameter(description = "Nombre de la marca para filtrar (opcional)", example = "Apple")
-            @RequestParam(value = "brandName", required = false) String brandName,  // Añadimos el parámetro brandName
+            @RequestParam(value = "brandName", required = false) String brandName,
 
             @Parameter(description = "Información de paginación (página y tamaño)", example = "page=0&size=10")
             Pageable pageable) {
-        // Crear un nuevo PageRequestCustom con la dirección de ordenamiento obtenida de los parámetros
         PageRequestCustom pageRequestCustom = new PageRequestCustom(
                 pageable.getPageNumber(),
                 pageable.getPageSize(),
                 "asc".equalsIgnoreCase(direction)
         );
-
-        // Obtener los artículos filtrados y ordenados, incluyendo el filtrado por nombre de la marca
         Page<ArticleDTO> articles = articleHandler.listArticles(pageRequestCustom, name, sort, categoryNames, brandName);
 
         return ResponseEntity.ok(articles);

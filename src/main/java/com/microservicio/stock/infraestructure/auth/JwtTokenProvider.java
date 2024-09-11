@@ -1,5 +1,6 @@
 package com.microservicio.stock.infraestructure.auth;
 
+import com.microservicio.stock.utils.Constants;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -39,7 +40,7 @@ public class JwtTokenProvider {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
         } catch (JwtException | IllegalArgumentException e) {
-            System.err.println("Token JWT no válido: " + e.getMessage());
+            System.err.println(Constants.INVALID_JWT_TOKEN + e.getMessage());
         }
         return false;
     }

@@ -4,8 +4,8 @@ import com.microservicio.stock.application.mapper.ArticleMapper;
 import com.microservicio.stock.application.mapper.PageMapper;
 import com.microservicio.stock.domain.model.Article;
 import com.microservicio.stock.domain.ports.api.ArticleIn;
-import com.microservicio.stock.domain.util.pageable.PageCustom;
-import com.microservicio.stock.domain.util.pageable.PageRequestCustom;
+import com.microservicio.stock.domain.pageable.PageCustom;
+import com.microservicio.stock.domain.pageable.PageRequestCustom;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -30,7 +30,6 @@ public class ArticleHandler {
         return articleMapper.toDTO(newArticle);
     }
     public Page<ArticleDTO> listArticles(PageRequestCustom pageRequestCustom, String name, String sort, List<String> categoryNames, String brandName) {
-        // Pasamos el brandName al servicio de dominio
         PageCustom<Article> pageCustom = articleIn.listArticle(pageRequestCustom, name, sort, categoryNames, brandName);
         return PageMapper.toSpringPage(
                 new PageCustom<>(

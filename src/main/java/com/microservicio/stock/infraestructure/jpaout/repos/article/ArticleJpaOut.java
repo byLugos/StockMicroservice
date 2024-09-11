@@ -15,6 +15,7 @@ import com.microservicio.stock.infraestructure.jpaout.mapper.JpaCategoryMapper;
 import com.microservicio.stock.infraestructure.jpaout.repos.brand.BrandRepository;
 import com.microservicio.stock.infraestructure.jpaout.repos.category.CategoryRepository;
 import com.microservicio.stock.infraestructure.jpaout.repos.relation.ArticleCategoryRepository;
+import com.microservicio.stock.utils.Constants;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
@@ -39,7 +40,7 @@ public class ArticleJpaOut implements ArticleOut {
         Brand brand = article.getBrand();
         if (brand != null) {
             BrandEntity brandEntity = brandRepository.findById(brand.getId())
-                    .orElseThrow(() -> new NotFoundCategory("Marca no encontrada"));
+                    .orElseThrow(() -> new NotFoundCategory(Constants.NOT_FOUND_BRAND));
             articleEntity.setBrand(brandEntity);
         }
         ArticleEntity savedEntity = articleRepository.save(articleEntity);
@@ -70,7 +71,6 @@ public class ArticleJpaOut implements ArticleOut {
             Long brandId = (Long) result[7];
             String brandName = (String) result[8];
             Brand brand = (brandId != null && brandName != null) ? new Brand(brandId, brandName, null) : null;
-            // Creamos el artículo si no existe en el mapa
             Article article = articlesMap.computeIfAbsent(articleId, id ->
                     new Article(id, articleName, articleDescription, articleQuantity, articlePrice, new ArrayList<>(), brand));
             if (categoryId != null && categoryName != null) {
@@ -85,12 +85,12 @@ public class ArticleJpaOut implements ArticleOut {
     public Category findCategoryById(Long id) {
         return categoryRepository.findById(id)
                 .map(jpaCategoryMapper::toDomain)
-                .orElseThrow(() -> new NotFoundCategory("Categoria no encontrada"));
+                .orElseThrow(() -> new NotFoundCategory(Constants.NOT_FOUND_CATEGORY));
     }
     @Override
     public Brand findBrandById(Long id) {
         return brandRepository.findById(id)
                 .map(jpaBrandMapper::toDomain)
-                .orElseThrow(() -> new NotFoundCategory("Marca no encontrada"));  // Método para buscar marca
+                .orElseThrow(() -> new NotFoundCategory(Constants.NOT_FOUND_BRAND));
     }
 }

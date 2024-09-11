@@ -19,7 +19,7 @@ public class ArticleEntity {
     private BigDecimal price;
     @OneToMany(mappedBy = "article",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<ArticleCategoryEntity> categories;
-    @ManyToOne(fetch = FetchType.LAZY)  // Relación de muchos a uno con BrandEntity
-    @JoinColumn(name = "brand_id")  // Clave foránea para la marca
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "brand_id")
     private BrandEntity brand;
 }

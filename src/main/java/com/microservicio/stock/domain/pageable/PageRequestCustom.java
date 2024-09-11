@@ -1,4 +1,4 @@
-package com.microservicio.stock.domain.util.pageable;
+package com.microservicio.stock.domain.pageable;
 
 public class PageRequestCustom {
     private int page;

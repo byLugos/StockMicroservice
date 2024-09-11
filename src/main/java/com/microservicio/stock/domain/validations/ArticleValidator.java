@@ -1,4 +1,4 @@
-package com.microservicio.stock.domain.util;
+package com.microservicio.stock.domain.validations;
 
 import com.microservicio.stock.domain.exception.InvalidDescriptionException;
 import com.microservicio.stock.domain.exception.InvalidNameExceptionMe;

@@ -4,8 +4,8 @@ import com.microservicio.stock.application.mapper.BrandMapper;
 import com.microservicio.stock.application.mapper.PageMapper;
 import com.microservicio.stock.domain.model.Brand;
 import com.microservicio.stock.domain.ports.api.BrandIn;
-import com.microservicio.stock.domain.util.pageable.PageCustom;
-import com.microservicio.stock.domain.util.pageable.PageRequestCustom;
+import com.microservicio.stock.domain.pageable.PageCustom;
+import com.microservicio.stock.domain.pageable.PageRequestCustom;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -23,9 +23,7 @@ public class BrandHandler {
         return brandMapper.toDTO(newBrand);
     }
     public Page<BrandDTO> listBrands(PageRequestCustom pageRequestCustom, String name, String sort) {
-        // Realizar la búsqueda y ordenamiento con los parámetros proporcionados
         PageCustom<Brand> pageCustom = brandIn.listBrand(pageRequestCustom, name, sort);
-        // Convertir la página personalizada en una página de Spring
         return PageMapper.toSpringPage(
                 new PageCustom<>(
                         pageCustom.getContent().stream().map(brandMapper::toDTO).toList(),

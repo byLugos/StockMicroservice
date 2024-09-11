@@ -2,7 +2,7 @@ package com.microservicio.stock.infraestructure.controllers;
 
 import com.microservicio.stock.application.dto.CategoryDTO;
 import com.microservicio.stock.application.handler.CategoryHandler;
-import com.microservicio.stock.domain.util.pageable.PageRequestCustom;
+import com.microservicio.stock.domain.pageable.PageRequestCustom;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

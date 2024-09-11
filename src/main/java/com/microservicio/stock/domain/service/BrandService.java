@@ -2,13 +2,12 @@ package com.microservicio.stock.domain.service;
 
 import com.microservicio.stock.domain.exception.InvalidNameExceptionMe;
 import com.microservicio.stock.domain.model.Brand;
-import com.microservicio.stock.domain.model.Category;
 import com.microservicio.stock.domain.ports.api.BrandIn;
 import com.microservicio.stock.domain.ports.spi.BrandOut;
-import com.microservicio.stock.domain.util.BrandValidator;
-import com.microservicio.stock.domain.util.pageable.PageCustom;
-import com.microservicio.stock.domain.util.pageable.PageRequestCustom;
-import com.microservicio.stock.domain.util.pageable.PagingUtil;
+import com.microservicio.stock.domain.validations.BrandValidator;
+import com.microservicio.stock.domain.pageable.PageCustom;
+import com.microservicio.stock.domain.pageable.PageRequestCustom;
+import com.microservicio.stock.domain.pageable.PagingUtil;
 
 import java.util.List;
 

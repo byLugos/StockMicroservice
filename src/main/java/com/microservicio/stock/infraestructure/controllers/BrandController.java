@@ -2,7 +2,7 @@ package com.microservicio.stock.infraestructure.controllers;
 
 import com.microservicio.stock.application.dto.BrandDTO;
 import com.microservicio.stock.application.handler.BrandHandler;
-import com.microservicio.stock.domain.util.pageable.PageRequestCustom;
+import com.microservicio.stock.domain.pageable.PageRequestCustom;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -58,15 +58,11 @@ public class BrandController {
 
             @Parameter(description = "Información de paginación (página y tamaño)", example = "page=0&size=10")
             Pageable pageable) {
-
-        // Crear un nuevo PageRequestCustom con la dirección de ordenamiento obtenida de los parámetros
         PageRequestCustom pageRequestCustom = new PageRequestCustom(
                 pageable.getPageNumber(),
                 pageable.getPageSize(),
                 "asc".equalsIgnoreCase(direction)
         );
-
-        // Obtener las categorías filtradas y ordenadas
         Page<BrandDTO> brands = brandHandler.listBrands(pageRequestCustom, name, sort);
 
         return ResponseEntity.ok(brands);

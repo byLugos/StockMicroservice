@@ -15,8 +15,8 @@ public interface ArticleMapper {
 
     @Mapping(target = "categories", source = "categories", qualifiedByName = "mapCategoriesToIds")
     @Mapping(target = "categoryNames", source = "categories", qualifiedByName = "mapCategoriesToNames")
-    @Mapping(target = "brandId", source = "brand.id")  // Mapeo del ID de la marca
-    @Mapping(target = "brandName", source = "brand.name")  // Mapeo del nombre de la marca
+    @Mapping(target = "brandId", source = "brand.id")
+    @Mapping(target = "brandName", source = "brand.name")
     ArticleDTO toDTO(Article article);
 
     @Named("mapCategoriesToIds")
