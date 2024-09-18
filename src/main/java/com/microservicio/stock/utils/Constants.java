@@ -20,5 +20,6 @@ public class Constants {
     public static final String GENERIC_ERROR_MESSAGE = "Ha ocurrido un error interno. Por favor, inténtalo de nuevo más tarde.";
     public static final String NOT_FOUND_ARTICLE = "Articulo no encontrado";
     public static final String STOCK_NEGATIVE = "El stock del artículo actualmente está vacío";
+    public static final String NO_AUTHORIZE = "Acceso denegado: No tienes permisos para acceder a este recurso.";
 
 }

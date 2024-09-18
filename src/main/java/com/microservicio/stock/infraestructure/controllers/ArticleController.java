@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import org.springframework.security.access.prepost.PreAuthorize;
+
 @RestController
 @RequestMapping("/articles")
 @AllArgsConstructor
@@ -29,6 +31,7 @@ public class ArticleController {
             @ApiResponse(responseCode = "401", description = "No autorizado, usuario no autenticado"),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<ArticleDTO> createArticle(
             @Parameter(description = "Detalles del artículo a crear", required = true)
@@ -44,6 +47,7 @@ public class ArticleController {
             @ApiResponse(responseCode = "401", description = "No autorizado, usuario no autenticado"),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public ResponseEntity<Page<ArticleDTO>> listArticles(
             @Parameter(description = "Nombre del artículo para filtrar (opcional)", example = "Laptop")
@@ -80,6 +84,7 @@ public class ArticleController {
             @ApiResponse(responseCode = "400", description = "Cantidad inválida proporcionada"),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
+    @PreAuthorize("hasRole('AUXBODEGA')")
     @PutMapping("/{articleId}/quantity")
     public ResponseEntity<ArticleDTO> updateStock(
             @Parameter(description = "ID del artículo a actualizar", required = true)
@@ -97,6 +102,7 @@ public class ArticleController {
             @ApiResponse(responseCode = "404", description = "Artículo no encontrado"),
             @ApiResponse(responseCode = "500", description = "Error interno del servidor")
     })
+    @PreAuthorize("hasRole('AUXBODEGA')")
     @GetMapping("/{articleId}/stock")
     public int currentStock(
             @Parameter(description = "ID del artículo", required = true)
