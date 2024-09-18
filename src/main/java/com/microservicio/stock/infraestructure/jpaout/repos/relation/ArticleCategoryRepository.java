@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 public interface ArticleCategoryRepository extends JpaRepository<ArticleCategoryEntity,Long> {
     @Query("SELECT ac.article.id, ac.article.name, ac.article.description, ac.article.price, " +
-            "ac.category.id, ac.category.name, ac.article.brand.id, ac.article.brand.name " +
+            "ac.category.id, ac.category.name, ac.article.brand.id, ac.article.brand.name,ac.article.quantity " +
             "FROM ArticleCategoryEntity ac")
     List<Object[]> findAllArticleDetailsWithCategoriesAndBrand();
 }

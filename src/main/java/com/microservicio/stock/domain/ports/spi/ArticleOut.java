@@ -4,6 +4,8 @@ import com.microservicio.stock.domain.model.ArticleCategory;
 import com.microservicio.stock.domain.model.Brand;
 import com.microservicio.stock.domain.model.Category;
 import java.util.List;
+import java.util.Optional;
+
 public interface ArticleOut {
     Article save(Article article);
     void saveArticleCategory(ArticleCategory articleCategory);
@@ -11,5 +13,5 @@ public interface ArticleOut {
     List<Article> findAll();
     Category findCategoryById(Long id);
     Brand findBrandById(Long id);
-    Article findById(Long id);
+    Optional<Article> findById(Long id);
 }

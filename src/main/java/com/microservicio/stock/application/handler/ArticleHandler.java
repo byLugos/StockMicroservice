@@ -24,7 +24,8 @@ public class ArticleHandler {
                 article.getDescription(),
                 article.getPrice(),
                 articleDTO.getCategories(),
-                articleDTO.getBrandId()
+                articleDTO.getBrandId(),
+                article.getQuantity()
         );
         return articleMapper.toDTO(newArticle);
     }
@@ -39,6 +40,13 @@ public class ArticleHandler {
                         pageCustom.isAscending()
                 )
         );
+    }
+    public ArticleDTO updateStock(Long articleId, int quantity) {
+        Article updatedArticle = articleIn.updateQuantity(articleId, quantity);
+        return articleMapper.toDTO(updatedArticle);
+    }
+    public int currentStock(Long articleId) {
+        return articleIn.currentStock(articleId);
     }
 }
 

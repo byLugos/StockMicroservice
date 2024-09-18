@@ -2,6 +2,9 @@ package com.microservicio.stock.utils;
 
 public class Constants {
 
+
+    public static final String STOCK_CANNOT_BE_NEGATIVE = "El stock no puede ser negativo";
+
     private Constants(){
 
     }

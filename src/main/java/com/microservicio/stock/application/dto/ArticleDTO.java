@@ -20,4 +20,5 @@ public class ArticleDTO {
     private List<String> categoryNames;
     private Long brandId;
     private String brandName;
+    private int quantity;
 }

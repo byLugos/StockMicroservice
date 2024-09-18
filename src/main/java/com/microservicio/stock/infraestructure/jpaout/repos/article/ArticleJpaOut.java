@@ -19,10 +19,8 @@ import com.microservicio.stock.utils.Constants;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 @Component
 @AllArgsConstructor
 public class ArticleJpaOut implements ArticleOut {
@@ -53,6 +51,10 @@ public class ArticleJpaOut implements ArticleOut {
         jpaArticleCategoryMapper.toDomain(savedEntity);
     }
     @Override
+    public Optional<Article> findById(Long id) {
+        return articleRepository.findById(id).map(jpaArticleMapper::toDomain);
+    }
+    @Override
     public boolean existByName(String name) {
         return articleRepository.existsByName(name);
     }
@@ -69,9 +71,10 @@ public class ArticleJpaOut implements ArticleOut {
             String categoryName = (String) result[5];
             Long brandId = (Long) result[6];
             String brandName = (String) result[7];
+            int quantity = (int) result[8];
             Brand brand = (brandId != null && brandName != null) ? new Brand(brandId, brandName, null) : null;
             Article article = articlesMap.computeIfAbsent(articleId, id ->
-                    new Article(id, articleName, articleDescription, articlePrice, new ArrayList<>(), brand));
+                    new Article(id, articleName, articleDescription, articlePrice, new ArrayList<>(), brand,quantity));
             if (categoryId != null && categoryName != null) {
                 Category category = new Category(categoryId, categoryName, null);
                 ArticleCategory articleCategory = new ArticleCategory(null, article, category);
@@ -90,13 +93,6 @@ public class ArticleJpaOut implements ArticleOut {
     public Brand findBrandById(Long id) {
         return brandRepository.findById(id)
                 .map(jpaBrandMapper::toDomain)
-                .orElseThrow(() -> new NotFoundCategory(Constants.NOT_FOUND_BRAND));
-    }
-
-    @Override
-    public Article findById(Long id) {
-        return articleRepository.findById(id)
-                .map(jpaArticleMapper::toDomain)
                 .orElseThrow(() -> new NotFoundCategory(Constants.NOT_FOUND_BRAND));
     }
 }
