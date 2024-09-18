@@ -22,7 +22,6 @@ public class ArticleHandler {
         Article newArticle = articleIn.createArticle(
                 article.getName(),
                 article.getDescription(),
-                article.getQuantity(),
                 article.getPrice(),
                 articleDTO.getCategories(),
                 articleDTO.getBrandId()

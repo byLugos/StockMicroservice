@@ -1,10 +1,4 @@
 package com.microservicio.stock.domain.model;
-
-
-/**
- * Representa una categoría con un id, nombre y descripción.
- */
-
 public class Category {
     private final Long id;
     private final String name;

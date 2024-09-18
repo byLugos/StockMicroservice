@@ -11,4 +11,5 @@ public interface ArticleOut {
     List<Article> findAll();
     Category findCategoryById(Long id);
     Brand findBrandById(Long id);
+    Article findById(Long id);
 }

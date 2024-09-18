@@ -20,7 +20,7 @@ public class ArticleService implements ArticleIn {
         this.articleOut = articleOut;
     }
     @Override
-    public Article createArticle(String name, String description, int quantity, BigDecimal price, List<Long> categoryIds, Long brandId) {
+    public Article createArticle(String name, String description, BigDecimal price, List<Long> categoryIds, Long brandId) {
         ArticleValidator.validateName(name);
         ArticleValidator.validateDescription(description);
         if (articleOut.existByName(name)) {
@@ -40,7 +40,7 @@ public class ArticleService implements ArticleIn {
             throw new InvalidNameExceptionMe(com.microservicio.stock.domain.util.Constants.ARTICLE_INVALID_BRAND);
         }
 
-        Article newArticle = new Article(null, name, description, quantity, price, null, brand);
+        Article newArticle = new Article(null, name, description, price, null, brand);
         Article savedArticle = articleOut.save(newArticle);
 
         for (Category category : categories) {

@@ -1,9 +1,4 @@
 package com.microservicio.stock.domain.model;
-
-
-/**
- * Representa una marca con un id, nombre y descripción.
- */
 public class Brand {
     private final Long id;
     private final String name;

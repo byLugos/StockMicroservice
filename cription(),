@@ -1,0 +1,29 @@
+[33maecf805[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mdevelop[m[33m, [m[1;31morigin/develop[m[33m)[m Hotfix build gradle
+[33mfb91cdf[m Constants and private info
+[33m2e79fd5[m Fix autorization bug
+[33m891766c[m Merge pull request #6 from byLugos/featureHU8/autorizacion
+[33m75b58e8[m[33m ([m[1;31morigin/featureHU8/autorizacion[m[33m, [m[1;32mfeatureHU8/autorizacion[m[33m)[m Authorize ADMIN to access
+[33m54367de[m Merge pull request #5 from byLugos/hotfix/correccionesCodigo
+[33mb4ab0f7[m[33m ([m[1;31morigin/hotfix/correccionesCodigo[m[33m, [m[1;32mhotfix/correccionesCodigo[m[33m)[m Agregar artículo con id de marca y listar id y nombre de marca
+[33m8a5797c[m Parametrización de listado de articulos
+[33m3f64640[m Parametrización de listar marca
+[33m46c5f2d[m Parametrización de listar categoria
+[33me8a842b[m Merge pull request #4 from byLugos/feature/Documentation
+[33m346cfd0[m[33m ([m[1;31morigin/feature/Documentation[m[33m, [m[1;32mfeature/Documentation[m[33m)[m Controllers documentation
+[33m6d9bf2b[m Merge branch 'develop' of https://github.com/byLugos/StockMicroservice into develop
+[33m7e079c2[m Merge pull request #3 from byLugos/featureHU6/listarArticulo
+[33m3aed186[m Merge branch 'featureHU6/listarArticulo' into develop
+[33mcc80644[m[33m ([m[1;32mfeatureHU5/crearArticulo[m[33m)[m Revert "List articles, SonarLint and Unit Test"
+[33m0dde29b[m[33m ([m[1;31morigin/featureHU6/listarArticulo[m[33m, [m[1;32mfeatureHU6/listarArticulo[m[33m)[m List articles, SonarLint and Unit Test
+[33m21eb60b[m List articles, SonarLint and Unit Test
+[33m1f9596b[m[33m ([m[1;31morigin/featureHU5/crearArticulo[m[33m)[m Bugs fixed
+[33m32f6ada[m Create article, SonarLint and Unit test
+[33m1e857fe[m[33m ([m[1;31morigin/featureHU4/listarMarca[m[33m, [m[1;32mfeatureHU4/listarMarca[m[33m)[m List brands, SonarLint, Unit test
+[33me104b6e[m Merge pull request #2 from byLugos/featureHU3/crearMarca
+[33m354822e[m[33m ([m[1;31morigin/featureHU3/crearMarca[m[33m, [m[1;32mfeatureHU3/crearMarca[m[33m)[m Create brand, SonarLint and UnitTest
+[33m6b93305[m Merge pull request #1 from byLugos/featureHU2/listarCategoria
+[33m338c0ce[m[33m ([m[1;31morigin/featureHU2/listarCategoria[m[33m, [m[1;32mfeatureHU2/listarCategoria[m[33m)[m List categories, SonarLint and Unit test
+[33mfbd9988[m[33m ([m[1;31morigin/featureHU1/crearCategoria[m[33m, [m[1;32mfeatureHU1/crearCategoria[m[33m)[m Create category, SonarLint and Unit test
+[33m920ddaf[m[33m ([m[1;33mtag: [m[1;33mv1.0.0[m[33m, [m[1;31morigin/main[m[33m, [m[1;32mmain[m[33m)[m Merge branch 'main' of https://github.com/byLugos/StockMicroservice
+[33m87a9041[m Initial configuration, Stock microservice
+[33mfc8e48c[m Initial commit

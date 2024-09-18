@@ -1,6 +1,7 @@
 package com.microservicio.stock.utils;
 
 public class Constants {
+
     private Constants(){
 
     }
@@ -14,4 +15,5 @@ public class Constants {
     public static final String CATEGORY_NOT_FOUND = "LA CATEGORIA NO SE PUDO ENCONTRAR";
     public static final String INTERNAL_SERVER_ERROR = "INTERNAL_SERVER_ERROR";
     public static final String GENERIC_ERROR_MESSAGE = "Ha ocurrido un error interno. Por favor, inténtalo de nuevo más tarde.";
+    public static final String NOT_FOUND_ARTICLE = "Articulo no encontrado";
 }

@@ -15,7 +15,6 @@ public class ArticleEntity {
     private Long id;
     private String name;
     private String description;
-    private int quantity;
     private BigDecimal price;
     @OneToMany(mappedBy = "article",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<ArticleCategoryEntity> categories;

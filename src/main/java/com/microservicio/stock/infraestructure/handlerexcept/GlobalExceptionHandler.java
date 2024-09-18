@@ -1,7 +1,9 @@
 package com.microservicio.stock.infraestructure.handlerexcept;
 
+import com.microservicio.stock.domain.exception.InvalidArticleQuantityException;
 import com.microservicio.stock.domain.exception.InvalidDescriptionException;
 import com.microservicio.stock.domain.exception.InvalidNameExceptionMe;
+import com.microservicio.stock.domain.exception.NotFoundArticle;
 import com.microservicio.stock.infraestructure.exception.ErrorResponse;
 import com.microservicio.stock.infraestructure.exception.NotFoundCategory;
 import com.microservicio.stock.utils.Constants;
@@ -35,5 +37,15 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleGlobalException(Exception ex, WebRequest request) {
         ErrorResponse errorResponse = new ErrorResponse(Constants.GENERIC_ERROR_MESSAGE, Constants.INTERNAL_SERVER_ERROR);
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    @ExceptionHandler(InvalidArticleQuantityException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidNameException(InvalidArticleQuantityException ex, WebRequest request) {
+        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), Constants.INVALID_NAME);
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(NotFoundArticle.class)
+    public ResponseEntity<ErrorResponse> handleInvalidNameException(NotFoundArticle ex, WebRequest request) {
+        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), Constants.INVALID_NAME);
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 }

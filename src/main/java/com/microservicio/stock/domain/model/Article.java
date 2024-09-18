@@ -5,15 +5,13 @@ public class Article {
     private Long id;
     private String name;
     private String description;
-    private int quantity;
     private BigDecimal price;
     private List<ArticleCategory> categories;
     private Brand brand;
-    public Article(Long id, String name, String description, int quantity, BigDecimal price, List<ArticleCategory> categories, Brand brand) {
+    public Article(Long id, String name, String description, BigDecimal price, List<ArticleCategory> categories, Brand brand) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.quantity = quantity;
         this.price = price;
         this.categories = categories;
         this.brand = brand;
@@ -26,9 +24,6 @@ public class Article {
     }
     public String getDescription() {
         return description;
-    }
-    public int getQuantity() {
-        return quantity;
     }
     public BigDecimal getPrice() {
         return price;

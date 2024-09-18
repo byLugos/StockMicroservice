@@ -64,15 +64,14 @@ public class ArticleJpaOut implements ArticleOut {
             Long articleId = (Long) result[0];
             String articleName = (String) result[1];
             String articleDescription = (String) result[2];
-            int articleQuantity = (int) result[3];
-            BigDecimal articlePrice = (BigDecimal) result[4];
-            Long categoryId = (Long) result[5];
-            String categoryName = (String) result[6];
-            Long brandId = (Long) result[7];
-            String brandName = (String) result[8];
+            BigDecimal articlePrice = (BigDecimal) result[3];
+            Long categoryId = (Long) result[4];
+            String categoryName = (String) result[5];
+            Long brandId = (Long) result[6];
+            String brandName = (String) result[7];
             Brand brand = (brandId != null && brandName != null) ? new Brand(brandId, brandName, null) : null;
             Article article = articlesMap.computeIfAbsent(articleId, id ->
-                    new Article(id, articleName, articleDescription, articleQuantity, articlePrice, new ArrayList<>(), brand));
+                    new Article(id, articleName, articleDescription, articlePrice, new ArrayList<>(), brand));
             if (categoryId != null && categoryName != null) {
                 Category category = new Category(categoryId, categoryName, null);
                 ArticleCategory articleCategory = new ArticleCategory(null, article, category);
@@ -91,6 +90,13 @@ public class ArticleJpaOut implements ArticleOut {
     public Brand findBrandById(Long id) {
         return brandRepository.findById(id)
                 .map(jpaBrandMapper::toDomain)
+                .orElseThrow(() -> new NotFoundCategory(Constants.NOT_FOUND_BRAND));
+    }
+
+    @Override
+    public Article findById(Long id) {
+        return articleRepository.findById(id)
+                .map(jpaArticleMapper::toDomain)
                 .orElseThrow(() -> new NotFoundCategory(Constants.NOT_FOUND_BRAND));
     }
 }

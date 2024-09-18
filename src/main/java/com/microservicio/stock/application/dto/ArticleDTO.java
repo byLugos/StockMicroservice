@@ -15,7 +15,6 @@ public class ArticleDTO {
     private Long id;
     private String name;
     private String description;
-    private int quantity;
     private BigDecimal price;
     private List<Long> categories;
     private List<String> categoryNames;
