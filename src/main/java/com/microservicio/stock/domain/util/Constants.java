@@ -1,6 +1,9 @@
 package com.microservicio.stock.domain.util;
 
 public class Constants {
+    public static final int FIFTHY = 50;
+    public static final int NUMBER = 120;
+
     private Constants(){
     }
     public static final String ARTICLE_NAME_EXISTS = "El nombre del articulo ya existe.";
@@ -8,5 +11,6 @@ public class Constants {
     public static final String ARTICLE_INVALID_BRAND = "La marca proporcionada no existe.";
     public static final int ZERO = 0;
     public static final int THREE = 3;
+
 
 }

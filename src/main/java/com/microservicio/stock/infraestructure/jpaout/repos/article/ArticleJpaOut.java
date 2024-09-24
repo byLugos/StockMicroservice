@@ -4,6 +4,8 @@ import com.microservicio.stock.domain.model.ArticleCategory;
 import com.microservicio.stock.domain.model.Brand;
 import com.microservicio.stock.domain.model.Category;
 import com.microservicio.stock.domain.ports.spi.ArticleOut;
+import com.microservicio.stock.infraestructure.exception.NotFoundArticle;
+import com.microservicio.stock.infraestructure.exception.NotFoundBrand;
 import com.microservicio.stock.infraestructure.exception.NotFoundCategory;
 import com.microservicio.stock.infraestructure.jpaout.entity.ArticleCategoryEntity;
 import com.microservicio.stock.infraestructure.jpaout.entity.ArticleEntity;
@@ -38,7 +40,7 @@ public class ArticleJpaOut implements ArticleOut {
         Brand brand = article.getBrand();
         if (brand != null) {
             BrandEntity brandEntity = brandRepository.findById(brand.getId())
-                    .orElseThrow(() -> new NotFoundCategory(Constants.NOT_FOUND_BRAND));
+                    .orElseThrow(NotFoundCategory::new);
             articleEntity.setBrand(brandEntity);
         }
         ArticleEntity savedEntity = articleRepository.save(articleEntity);
@@ -58,6 +60,20 @@ public class ArticleJpaOut implements ArticleOut {
     public boolean existByName(String name) {
         return articleRepository.existsByName(name);
     }
+
+    @Override
+    public Optional<Article> findByName(String name) {
+        return Optional.ofNullable(articleRepository.findByName(name)
+                .map(jpaArticleMapper::toDomain)
+                .orElseThrow(NotFoundArticle::new));
+    }
+    @Override
+    public Category findCategoryById(Long id) {
+        return categoryRepository.findById(id)
+                .map(jpaCategoryMapper::toDomain)
+                .orElseThrow(NotFoundCategory::new);
+    }
+
     @Override
     public List<Article> findAll() {
         List<Object[]> results = articleCategoryRepository.findAllArticleDetailsWithCategoriesAndBrand();
@@ -83,16 +99,11 @@ public class ArticleJpaOut implements ArticleOut {
         }
         return new ArrayList<>(articlesMap.values());
     }
-    @Override
-    public Category findCategoryById(Long id) {
-        return categoryRepository.findById(id)
-                .map(jpaCategoryMapper::toDomain)
-                .orElseThrow(() -> new NotFoundCategory(Constants.NOT_FOUND_CATEGORY));
-    }
+
     @Override
     public Brand findBrandById(Long id) {
         return brandRepository.findById(id)
                 .map(jpaBrandMapper::toDomain)
-                .orElseThrow(() -> new NotFoundCategory(Constants.NOT_FOUND_BRAND));
+                .orElseThrow(NotFoundBrand::new);
     }
 }

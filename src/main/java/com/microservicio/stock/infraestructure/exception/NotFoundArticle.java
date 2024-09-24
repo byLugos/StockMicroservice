@@ -1,4 +1,4 @@
-package com.microservicio.stock.domain.exception;
+package com.microservicio.stock.infraestructure.exception;
 
 import com.microservicio.stock.utils.Constants;
 

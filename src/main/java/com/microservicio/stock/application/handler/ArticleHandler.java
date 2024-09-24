@@ -48,5 +48,9 @@ public class ArticleHandler {
     public int currentStock(Long articleId) {
         return articleIn.currentStock(articleId);
     }
+    public Long findArticleIdByName(String name) {
+        Article article = articleIn.findArticleByName(name);
+        return article.getId();
+    }
 }
 

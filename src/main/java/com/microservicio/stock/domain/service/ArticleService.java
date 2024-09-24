@@ -1,6 +1,7 @@
 package com.microservicio.stock.domain.service;
 import com.microservicio.stock.domain.exception.InvalidNameExceptionMe;
 import com.microservicio.stock.domain.exception.InvalidStockException;
+import com.microservicio.stock.domain.exception.NotFoundArticle;
 import com.microservicio.stock.domain.model.Article;
 import com.microservicio.stock.domain.model.ArticleCategory;
 import com.microservicio.stock.domain.model.Brand;
@@ -11,7 +12,6 @@ import com.microservicio.stock.domain.validations.ArticleValidator;
 import com.microservicio.stock.domain.pageable.PageCustom;
 import com.microservicio.stock.domain.pageable.PageRequestCustom;
 import com.microservicio.stock.domain.pageable.PagingUtil;
-import com.microservicio.stock.infraestructure.exception.NotFoundCategory;
 import com.microservicio.stock.utils.Constants;
 
 import java.math.BigDecimal;
@@ -26,7 +26,7 @@ public class ArticleService implements ArticleIn {
         ArticleValidator.validateName(name);
         ArticleValidator.validateDescription(description);
         if (articleOut.existByName(name)) {
-            throw new InvalidNameExceptionMe(com.microservicio.stock.domain.util.Constants.ARTICLE_NAME_EXISTS);
+            throw new InvalidNameExceptionMe();
         }
         List<Category> categories = categoryIds.stream()
                 .map(articleOut::findCategoryById)
@@ -34,12 +34,12 @@ public class ArticleService implements ArticleIn {
                 .toList();
 
         if (categories.isEmpty() || categories.size() > com.microservicio.stock.domain.util.Constants.THREE) {
-            throw new InvalidNameExceptionMe(com.microservicio.stock.domain.util.Constants.ARTICLE_INVALID_CATEGORIES);
+            throw new InvalidNameExceptionMe();
         }
 
         Brand brand = articleOut.findBrandById(brandId);
         if (brand == null) {
-            throw new InvalidNameExceptionMe(com.microservicio.stock.domain.util.Constants.ARTICLE_INVALID_BRAND);
+            throw new InvalidNameExceptionMe();
         }
 
         Article newArticle = new Article(null, name, description, price, null, brand, quantity);
@@ -80,10 +80,10 @@ public class ArticleService implements ArticleIn {
     @Override
     public Article updateQuantity(Long articleId, int quantity) {
         Article article = articleOut.findById(articleId)
-                .orElseThrow(() -> new NotFoundCategory(Constants.NOT_FOUND_ARTICLE));
+                .orElseThrow(com.microservicio.stock.domain.exception.NotFoundCategory::new);
         int newQuantity = article.getQuantity() + quantity;
         if (newQuantity < com.microservicio.stock.domain.util.Constants.ZERO) {
-            throw new InvalidStockException(Constants.STOCK_CANNOT_BE_NEGATIVE);
+            throw new InvalidStockException();
         }
         article.setQuantity(newQuantity);
         return articleOut.save(article);
@@ -91,7 +91,12 @@ public class ArticleService implements ArticleIn {
     @Override
     public int currentStock(Long articleId) {
         Article article = articleOut.findById(articleId)
-                .orElseThrow(() -> new NotFoundCategory(Constants.NOT_FOUND_ARTICLE));
+                .orElseThrow(com.microservicio.stock.domain.exception.NotFoundCategory::new);
         return article.getQuantity();
+    }
+    @Override
+    public Article findArticleByName(String name) {
+        return articleOut.findByName(name)
+                .orElseThrow(NotFoundArticle::new);
     }
 }

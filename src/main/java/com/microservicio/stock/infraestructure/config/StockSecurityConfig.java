@@ -25,8 +25,7 @@ public class StockSecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/articles/{articleId}/quantity").hasRole("AUXBODEGA")
-                        .requestMatchers("/articles/{articleId}/stock").hasRole("AUXBODEGA")
+                        .requestMatchers("/auxArticles/**").permitAll()
                         .requestMatchers("/articles/**", "/brands/**", "/categories/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )

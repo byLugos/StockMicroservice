@@ -10,6 +10,7 @@ public interface ArticleOut {
     Article save(Article article);
     void saveArticleCategory(ArticleCategory articleCategory);
     boolean existByName(String name);
+    Optional<Article> findByName(String name);
     List<Article> findAll();
     Category findCategoryById(Long id);
     Brand findBrandById(Long id);

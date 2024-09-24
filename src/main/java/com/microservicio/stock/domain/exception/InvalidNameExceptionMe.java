@@ -1,8 +1,9 @@
 package com.microservicio.stock.domain.exception;
 
-public class InvalidNameExceptionMe extends RuntimeException{
-    public InvalidNameExceptionMe(String message) {
-        super(message);
-    }
+import com.microservicio.stock.utils.Constants;
 
+public class InvalidNameExceptionMe extends RuntimeException{
+    public InvalidNameExceptionMe() {
+        super(Constants.INVALID_NAME);
+    }
 }
