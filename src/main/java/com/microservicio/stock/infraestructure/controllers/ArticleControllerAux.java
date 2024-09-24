@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 public class ArticleControllerAux {
     private final ArticleHandler articleHandler;
+
     @Operation(summary = "Actualiza la cantidad de stock de un artículo", description = "Endpoint para modificar la cantidad de stock de un artículo específico.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Stock actualizado exitosamente"),
@@ -45,10 +46,18 @@ public class ArticleControllerAux {
             @PathVariable Long articleId) {
         return articleHandler.currentStock(articleId);
     }
+
+    @Operation(summary = "Encuentra el ID de un artículo por su nombre", description = "Devuelve el ID de un artículo dado su nombre.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "ID del artículo encontrado exitosamente"),
+            @ApiResponse(responseCode = "404", description = "Artículo no encontrado"),
+            @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+    })
     @GetMapping("/findByName")
-    public ResponseEntity<Long> findArticleIdByName(@RequestParam String name) {
+    public ResponseEntity<Long> findArticleIdByName(
+            @Parameter(description = "Nombre del artículo a buscar", required = true)
+            @RequestParam String name) {
         Long articleId = articleHandler.findArticleIdByName(name);
         return ResponseEntity.ok(articleId);
     }
-
 }
