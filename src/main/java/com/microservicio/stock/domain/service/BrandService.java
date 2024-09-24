@@ -1,6 +1,6 @@
 package com.microservicio.stock.domain.service;
 
-import com.microservicio.stock.domain.exception.InvalidNameExceptionMe;
+import com.microservicio.stock.domain.exception.InvalidBrandExists;
 import com.microservicio.stock.domain.model.Brand;
 import com.microservicio.stock.domain.ports.api.BrandIn;
 import com.microservicio.stock.domain.ports.spi.BrandOut;
@@ -22,8 +22,7 @@ public class BrandService implements BrandIn {
         BrandValidator.validateName(name);
         BrandValidator.validateDescription(description);
         if (brandOut.existsByName(name)){
-            String brandExist = "El nombre de la marca ya existe";
-            throw new InvalidNameExceptionMe(brandExist);
+            throw new InvalidBrandExists();
         }
         Brand newBrand = new Brand(null, name,description);
         return brandOut.save(newBrand);

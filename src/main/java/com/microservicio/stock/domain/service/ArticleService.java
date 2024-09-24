@@ -80,14 +80,15 @@ public class ArticleService implements ArticleIn {
     @Override
     public Article updateQuantity(Long articleId, int quantity) {
         Article article = articleOut.findById(articleId)
-                .orElseThrow(com.microservicio.stock.domain.exception.NotFoundCategory::new);
+                .orElseThrow(NotFoundArticle::new);
         int newQuantity = article.getQuantity() + quantity;
-        if (newQuantity < com.microservicio.stock.domain.util.Constants.ZERO) {
+        if (newQuantity < 0) {
             throw new InvalidStockException();
         }
         article.setQuantity(newQuantity);
         return articleOut.save(article);
     }
+
     @Override
     public int currentStock(Long articleId) {
         Article article = articleOut.findById(articleId)

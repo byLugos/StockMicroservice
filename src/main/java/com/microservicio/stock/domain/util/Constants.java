@@ -3,6 +3,8 @@ package com.microservicio.stock.domain.util;
 public class Constants {
     public static final int FIFTHY = 50;
     public static final int NUMBER = 120;
+    public static final String BRAND_EXISTS = "La marca ya existe";
+    public static final String CATEGORY_EXISTS = "La categoria ya existe";
 
     private Constants(){
     }
